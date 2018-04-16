@@ -56,11 +56,7 @@
     </div>
 </div>
 
-<script type="text/javascript" src="$!{request.getContextPath()}/resource/lib/jquery/1.9.1/jquery.min.js"></script>
-<script type="text/javascript" src="$!{request.getContextPath()}/resource/lib/layer/2.1/layer.js"></script>
-<script type="text/javascript" src="$!{request.getContextPath()}/resource/lib/My97DatePicker/WdatePicker.js"></script>
-<script type="text/javascript" src="$!{request.getContextPath()}/resource/js/h-ui/H-ui.js"></script>
-<script type="text/javascript" src="$!{request.getContextPath()}/resource/js/h-ui/H-ui.admin.js"></script>
+#parse("share/hi-footer.vm")
 <script type="text/javascript">
     /*管理员-角色-添加*/
     function admin_role_add(title,url,w,h){

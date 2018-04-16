@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC
+        "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="domain.mapper.RoleMapper">
+    <resultMap id="result" type="role">
+        <id column="id" property="id" jdbcType="BIGINT" javaType="long"></id>
+        <result column="rolename" property="roleName" jdbcType="VARCHAR"></result>
+        <result column="displayname" property="displayName" jdbcType="VARCHAR"></result>
+        <result column="create_time" property="createTime" jdbcType="DATE"></result>
+        <result column="update_time" property="updateTime" jdbcType="DATE"></result>
+    </resultMap>
+
+    <sql id="select_sql">
+        SELECT id,rolename,displayname,create_time,update_time
+    </sql>
+
+    <select id="queryById" parameterType="long" resultMap="result">
+        <include refid="select_sql"/>
+        FROM tb_role WHERE id=#{id}
+    </select>
+
+    <select id="queryByName" parameterType="string" resultMap="result">
+        <include refid="select_sql"/>
+        FROM tb_role WHERE rolename=#{name}
+    </select>
+
+    <select id="queryByIds" resultMap="result">
+        <include refid="select_sql"/>
+        FROM tb_role WHERE
+        <foreach collection="list" item="id" index="index" separator="OR">
+            id=#{id}
+        </foreach>
+    </select>
+
+    <select id="queryList" resultMap="result">
+        <include refid="select_sql"/>
+        FROM tb_role
+    </select>
+
+    <select id="queryPageList" resultMap="result">
+        <include refid="select_sql"/>
+        FROM tb_role
+        limit #{query.startRow},#{query.pageSize}
+    </select>
+
+    <select id="queryCountPage" resultType="java.lang.Integer">
+        SELECT COUNT(1) FROM tb_role
+    </select>
+
+    <insert id="insertRoleAndReturnId" parameterType="role" useGeneratedKeys="true" keyProperty="id">
+        INSERT tb_role(rolename,displayname,create_time,update_time) VALUES (#{roleName},#{displayName},#{createTime},#{updateTime})
+    </insert>
+
+    <update id="updateRole" parameterType="role">
+        UPDATE tb_role SET rolename=#{roleName},displayname=#{displayName},create_time=#{createTime},update_time=#{updateTime} WHERE id=#{id}
+    </update>
+
+    <delete id="deleteRole" parameterType="long">
+        DELETE FROM tb_role WHERE id=#{id}
+    </delete>
+</mapper>

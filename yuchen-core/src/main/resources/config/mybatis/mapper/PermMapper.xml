@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC
+        "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="domain.mapper.PermMapper">
+    <resultMap id="result" type="perm">
+        <id column="id" property="id" jdbcType="BIGINT"></id>
+        <result column="parentid" property="parentId" jdbcType="BIGINT"></result>
+        <result column="permtype" property="type" jdbcType="INTEGER"></result>
+        <result column="displayname" property="displayName" jdbcType="VARCHAR"></result>
+        <result column="url" property="url" jdbcType="VARCHAR"></result>
+        <result column="remark" property="remark" jdbcType="VARCHAR"></result>
+        <result column="create_time" property="createTime" jdbcType="DATE"></result>
+        <result column="update_time" property="updateTime" jdbcType="DATE"></result>
+    </resultMap>
+
+    <sql id="select_sql">
+        SELECT id,parentid,permtype,displayname,url,remark,create_time,update_time
+    </sql>
+
+    <select id="queryList" resultMap="result">
+        <include refid="select_sql"/>
+        FROM tb_perm
+    </select>
+
+    <select id="queryPageList" resultMap="result">
+        <include refid="select_sql"/>
+        FROM tb_perm
+        limit #{query.startRow},#{query.pageSize}
+    </select>
+
+    <select id="queryCountPage" resultType="java.lang.Integer">
+        SELECT COUNT(1) FROM tb_perm
+    </select>
+
+    <select id="queryById" parameterType="long" resultMap="result">
+        <include refid="select_sql"/>
+        FROM tb_perm WHERE id=#{id}
+    </select>
+
+    <select id="queryByParentId" parameterType="long" resultMap="result">
+        <include refid="select_sql"/>
+        FROM tb_perm WHERE parentid=#{id}
+    </select>
+
+    <select id="queryByType" resultMap="result">
+        <include refid="select_sql"/>
+        FROM tb_perm WHERE
+        <foreach collection="list" item="type" index="index" separator="OR">
+            permtype=#{type}
+        </foreach>
+    </select>
+
+    <select id="queryByIdsAndType" resultMap="result">
+        <include refid="select_sql"/>
+        FROM tb_perm WHERE
+        <foreach collection="ids" item="id" index="index" separator="OR" open="(" close=")">
+            id=#{id}
+        </foreach>
+        AND permtype=#{type}
+    </select>
+
+    <select id="queryUrlByListId" resultType="string">
+        SELECT url FROM tb_perm WHERE
+        <foreach collection="list" item="id" index="index" separator="OR">
+            id=#{id}
+        </foreach>
+    </select>
+
+    <select id="queryIds" resultType="string">
+        SELECT id FROM tb_perm
+    </select>
+
+    <select id="queryByIdsAndParentId" resultMap="result">
+        <include refid="select_sql"/>
+        FROM tb_perm WHERE
+        <foreach collection="ids" item="id" index="index" separator="OR" open="(" close=")">
+            id=#{id}
+        </foreach>
+        AND parentid=#{parentid}
+    </select>
+    
+    <insert id="insertPerm" parameterType="perm">
+        INSERT INTO tb_perm(parentid,permtype,displayname,url,remark,create_time,update_time) VALUES (#{parentId},#{type},#{displayName},#{url},#{remark},#{createTime},#{updateTime})
+    </insert>
+
+    <update id="updateById" parameterType="perm">
+        UPDATE tb_perm 
+        <set>
+            <if test="parentId!=null">
+                parentid=#{parentId},
+            </if>
+            <if test="type!=null">
+                permtype=#{type},
+            </if>
+            <if test="displayName!=null">
+                displayname=#{displayName},
+            </if>
+            <if test="url!=null">
+                url=#{url},
+            </if>
+            <if test="remark!=null">
+                remark=#{remark},
+            </if>
+            <if test="createTime!=null">
+                create_time=#{createTime},
+            </if>
+            <if test="updateTime!=null">
+                update_time=#{updateTime},
+            </if>
+        </set>
+        WHERE id=#{id}
+    </update>
+
+    <delete id="deleteById" parameterType="long">
+        DELETE FROM tb_perm WHERE id=#{id}
+    </delete>
+</mapper>

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC
+        "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="domain.mapper.MemberRoleMapper">
+    <resultMap id="result" type="memberrole">
+        <id column="id" property="id" jdbcType="BIGINT"></id>
+        <result column="memberid" property="memberId" jdbcType="BIGINT"></result>
+        <result column="roleids" property="roleIds" jdbcType="VARCHAR"></result>
+        <result column="create_time" property="createTime" jdbcType="DATE"></result>
+    </resultMap>
+
+    <select id="queryRolesByMemberId" parameterType="long" resultType="string">
+        SELECT roleids FROM tb_member_role WHERE memberid=#{memberid}
+    </select>
+    
+    <insert id="insertMemberRole" parameterType="memberrole">
+        INSERT INTO tb_member_role(memberid,roleids,create_time) VALUES (#{memberId},#{roleIds},#{createTime})
+    </insert>
+
+    <delete id="deleteByMemberId" parameterType="long">
+        DELETE FROM tb_member_role WHERE memberid=#{memberid}
+    </delete>
+</mapper>

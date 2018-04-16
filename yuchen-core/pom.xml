@@ -23,6 +23,11 @@
     </properties>
 
     <dependencies>
+        <dependency>
+            <groupId>yuchen-all</groupId>
+            <artifactId>yuchen-common</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
         <!-- spring -->
         <dependency>
             <groupId>org.springframework</groupId>

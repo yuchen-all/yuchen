@@ -13,6 +13,7 @@ import yuchen.common.utility.MD5Utility;
 import yuchen.core.sys.dto.MemberDto;
 import yuchen.core.sys.model.PageModel;
 import yuchen.core.sys.model.sys.Member;
+import yuchen.core.sys.model.sys.Role;
 import yuchen.core.sys.model.sys.query.MemberQuery;
 
 import javax.annotation.Resource;
@@ -47,7 +48,7 @@ public class AdminController extends BaseController {
         MemberDto member=new MemberDto();
         List list= roleService.queryList();
         if (id>0){
-            member=memberService.queryById(id);
+            member=memberService.queryDtoById(id);
             model.addAttribute("rolelist",list);
             model.addAttribute("member",member);
             return "/admin/edit";
@@ -60,28 +61,33 @@ public class AdminController extends BaseController {
     @ResponseBody
     @RequestMapping(value = "/admin/adding")
     public JsonResult adding(Member member, @RequestParam(value = "roleids") String ids){
+        if (member.getId()!=null&&member.getId()>0){
+            Member oldMember = memberService.queryById(member.getId());
+            oldMember.setUserName(member.getUserName());
+            oldMember.setDisplayName(member.getDisplayName());
+            oldMember.setSex(member.getSex());
+            oldMember.setPhone(member.getPhone());
+            oldMember.setRemark(member.getRemark());
+            if (memberService.updateMember(oldMember,ids)){
+                return jsonResult(1,"修改成功");
+            }
+            return jsonResult(-1,"修改失败");
+        }
         member.setStatus((short)1);
         member.setCreateTime(new Date());
         member.setPassword(MD5Utility.toMD5(member.getPassword()));
-        if (member.getId()>0){
-
-            return jsonResult(1,"修改成功");
-        }
         memberService.insertMember(member,ids);
         return jsonResult(1,"新增成功");
     }
 
     @Auth(rule = "/admin/edit")
     @RequestMapping(value = "/admin/edit")
-    public String edit(){
+    public String edit(Model model, @RequestParam(value = "memberId") Long memberId){
+        MemberDto member = memberService.queryDtoById(memberId);
+        List<Role> roleList = roleService.queryList();
+        model.addAttribute("member",member);
+        model.addAttribute("rolelist",roleList);
         return "/admin/edit";
-    }
-
-    @Auth(rule = "/admin/edit")
-    @ResponseBody
-    @RequestMapping(value = "/admin/editing")
-    public JsonResult editing(){
-        return jsonResult(-1,"修改失败");
     }
 
     @Auth(rule = "/admin/start" )

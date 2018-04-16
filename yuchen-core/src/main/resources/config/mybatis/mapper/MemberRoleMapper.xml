@@ -5,12 +5,16 @@
 
 
 <mapper namespace="yuchen.core.sys.mapper.MemberRoleMapper">
-    <resultMap id="result" type="memberrole">
+    <resultMap id="result" type="yuchen.core.sys.model.sys.MemberRole">
         <id column="id" property="id" jdbcType="BIGINT"></id>
         <result column="memberid" property="memberId" jdbcType="BIGINT"></result>
         <result column="roleids" property="roleIds" jdbcType="VARCHAR"></result>
         <result column="create_time" property="createTime" jdbcType="DATE"></result>
     </resultMap>
+
+    <sql id="select_sql">
+        SELECT id,memberid,roleids,create_time
+    </sql>
 
     <select id="queryRolesByMemberId" parameterType="long" resultType="string">
         SELECT roleids FROM tb_member_role WHERE memberid=#{memberid}
@@ -23,4 +27,22 @@
     <delete id="deleteByMemberId" parameterType="long">
         DELETE FROM tb_member_role WHERE memberid=#{memberid}
     </delete>
+
+    <select id="queryByMemberId" parameterType="long" resultMap="result">
+        <include refid="select_sql"/>
+        FROM tb_member_role WHERE memberid=#{memberId}
+    </select>
+
+    <update id="updateMemberRole" parameterType="yuchen.core.sys.model.sys.MemberRole">
+        UPDATE tb_member_role
+        <set>
+            <if test="memberId != null">
+                memberid = #{memberId,jdbcType=BIGINT},
+            </if>
+            <if test="roleIds != null">
+                roleids = #{roleIds,jdbcType=VARCHAR},
+            </if>
+        </set>
+        WHERE id=#{id}
+    </update>
 </mapper>

@@ -46,11 +46,12 @@
                     <dd>
                         #foreach($item in $rolelist)
                             <label class="">
-                                <input type="checkbox" value="$!{item.id}" name="user-Character-0-0-0" #foreach($role in $member.roles)
+                                <input type="checkbox" value="$!{item.id}" name="user-Character-0-0-0"
+                                    #foreach($role in $member.roles)
                                     #if($item.id==$role.id)
                                         checked
                                     #end
-                                #end id="user-Character-0-0-0">
+                                    #end id="user-Character-0-0-0">
                                 $!{item.displayName}</label>
                         #end
                     </dd>

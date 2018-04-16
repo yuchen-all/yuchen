@@ -17,12 +17,12 @@
         <result column="sex" property="sex" jdbcType="INTEGER"></result>
         <result column="create_time" property="createTime" ></result>
         <result column="update_time" property="updateTime" ></result>
-        <result column="remark" property="remark"></result>
+        <result column="remark" property="remark" jdbcType="VARCHAR"></result>
         <result column="status" property="status" jdbcType="INTEGER"></result>
     </resultMap>
     
     <sql id="select_sql">
-        SELECT id,phone,username,displayname,sex,img_url,password,address,create_time,update_time,status
+        SELECT id,phone,username,displayname,sex,img_url,password,address,create_time,update_time,remark,status
     </sql>
 
     <select id="queryPageList" resultMap="result">
@@ -45,12 +45,12 @@
         FROM tb_member WHERE username=#{username}
     </select>
 
-    <select id="querylist" resultMap="result">
+    <select id="queryList" resultMap="result">
         <include refid="select_sql"/>
         FROM tb_member
     </select>
     
-    <insert id="insertmember" parameterType="member" useGeneratedKeys="true" keyProperty="id">
+    <insert id="insertMember" parameterType="member" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO tb_member(phone,username,displayname,img_url,password,address,sex,create_time,update_time,remark,status)
         VALUES (#{phone},#{userName},#{displayName},#{imgUrl},#{password},#{address},#{sex},#{createTime},#{updateTime},#{remark},#{status})
     </insert>
@@ -61,5 +61,42 @@
     
     <update id="updateStatus">
         UPDATE tb_member SET status=#{status} WHERE id=#{memberid}
+    </update>
+
+    <update id="updateMember" parameterType="member">
+        UPDATE tb_member
+        <set>
+            <if test="member.phone != null">
+                phone = #{member.phone,jdbcType=VARCHAR},
+            </if>
+            <if test="member.userName != null">
+                username = #{member.userName,jdbcType=VARCHAR},
+            </if>
+            <if test="member.displayName != null">
+                displayname = #{member.displayName,jdbcType=VARCHAR},
+            </if>
+            <if test="member.imgUrl != null">
+                img_url = #{member.imgUrl,jdbcType=VARCHAR},
+            </if>
+            <if test="member.password != null">
+                password = #{member.password,jdbcType=VARCHAR},
+            </if>
+            <if test="member.address != null">
+                address = #{member.address,jdbcType=VARCHAR},
+            </if>
+            <if test="member.sex != null">
+                sex = #{member.sex,jdbcType=INTEGER},
+            </if>
+            <if test="member.remark != null">
+                remark = #{member.remark,jdbcType=VARCHAR},
+            </if>
+            <if test="member.status != null">
+                status = #{member.status,jdbcType=INTEGER},
+            </if>
+            <if test="member.updateTime != null">
+                update_time = #{member.updateTime},
+            </if>
+        </set>
+        WHERE id=#{member.id}
     </update>
 </mapper>

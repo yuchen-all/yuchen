@@ -27,7 +27,7 @@ public class MemberManager {
 
     public List<Member> queryList(){
         try {
-            return memberMapper.querylist();
+            return memberMapper.queryList();
         } catch (Exception e) {
             logger.error("MemberManager.queryList异常",e);
             throw e;
@@ -73,7 +73,7 @@ public class MemberManager {
     @Transactional(rollbackFor = Exception.class)
     public boolean insertMember(Member member,String ids){
         try {
-            if (memberMapper.insertmember(member)>0){
+            if (memberMapper.insertMember(member)>0){
                 MemberRole memberRole=new MemberRole();
                 memberRole.setRoleIds(ids);
                 memberRole.setMemberId(member.getId());
@@ -104,5 +104,21 @@ public class MemberManager {
             logger.error("MemberManager.updateStatus异常",e);
             throw e;
         }
+    }
+
+    public boolean updateMember(Member member,String roleids){
+        try {
+            if (memberMapper.updateMember(member)>0){
+                MemberRole memberRole = memberRoleMapper.queryByMemberId(member.getId());
+                memberRole.setRoleIds(roleids);
+                if (memberRoleMapper.updateMemberRole(memberRole)>0){
+                    return true;
+                }
+            }
+        } catch (Exception e) {
+            logger.error("MemberManager.updateMember异常",e);
+            throw e;
+        }
+        return false;
     }
 }

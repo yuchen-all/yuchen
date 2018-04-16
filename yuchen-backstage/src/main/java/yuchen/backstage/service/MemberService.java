@@ -18,7 +18,7 @@ public interface MemberService {
 
     PageModel<MemberDto> queryPageList(MemberQuery query);
 
-    MemberDto queryById(Long id) throws IllegalAccessException, NoSuchMethodException, InvocationTargetException;
+    MemberDto queryDtoById(Long id);
 
     Member queryByUsername(String username);
 
@@ -29,4 +29,8 @@ public interface MemberService {
     int deleteMember(Long id);
 
     int updateStatus(Long memberid,Short status);
+
+    Member queryById(Long id);
+
+    boolean updateMember(Member member,String roleids);
 }

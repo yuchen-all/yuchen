@@ -13,4 +13,8 @@ public interface MemberRoleMapper {
     int insertMemberRole(MemberRole memberRoles);
 
     int deleteByMemberId(long memberid);
+
+    MemberRole queryByMemberId(Long memberId);
+
+    int updateMemberRole(MemberRole memberRole);
 }

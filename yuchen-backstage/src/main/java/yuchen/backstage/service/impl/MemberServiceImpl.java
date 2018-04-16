@@ -71,10 +71,15 @@ public class MemberServiceImpl implements MemberService {
         return pageModel;
     }
 
-    public MemberDto queryById(Long id) throws IllegalAccessException, NoSuchMethodException, InvocationTargetException {
+    public MemberDto queryDtoById(Long id){
         MemberDto memberDto=new MemberDto();
         Member member=memberManager.queryById(id);
-        PropertyUtils.copyProperties(memberDto,member);
+        try {
+            PropertyUtils.copyProperties(memberDto,member);
+        } catch (Exception e) {
+            logger.error("属性转换异常",e);
+            return null;
+        }
         //List<Role> rolelist= roleDao.queryByMemberId(id);
         List<Role> rolelist=roleManager.queryByMemberId(id);
         List<MemberRoleDto> memberRoleDtos=new ArrayList<MemberRoleDto>();
@@ -146,8 +151,13 @@ public class MemberServiceImpl implements MemberService {
     }
 
     public Member insertMember(Member member, String roleids) {
-        memberManager.insertMember(member,roleids);
-        return member;
+        try {
+            memberManager.insertMember(member,roleids);
+            return member;
+        } catch (Exception e) {
+            logger.error("MemberServiceImpl.insertMember异常",e);
+            throw e;
+        }
     }
 
     public int deleteMember(Long id) {
@@ -156,5 +166,15 @@ public class MemberServiceImpl implements MemberService {
 
     public int updateStatus(Long memberid, Short status) {
         return memberManager.updateStatus(memberid,status);
+    }
+
+    @Override
+    public Member queryById(Long id) {
+        return memberManager.queryById(id);
+    }
+
+    @Override
+    public boolean updateMember(Member member, String roleids) {
+        return memberManager.updateMember(member,roleids);
     }
 }

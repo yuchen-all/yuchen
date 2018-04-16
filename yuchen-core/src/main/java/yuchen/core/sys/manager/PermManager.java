@@ -22,13 +22,13 @@ public class PermManager {
     @Autowired
     private PermMapper permMapper;
     @Autowired
-    private MemberRoleMapper memberRoleDao;
+    private MemberRoleMapper memberRoleMapper;
     @Autowired
     private RolePermMapper rolePermDao;
     public List<Perm> queryByMemberIdAndParentId(Long memberid, Long parentid){
         List<Perm> list=new ArrayList<Perm>();
         List<Long> roleids=new ArrayList<Long>();
-        String rolestr= memberRoleDao.queryRolesByMemberId(memberid);
+        String rolestr= memberRoleMapper.queryRolesByMemberId(memberid);
         roleids= StringUtility.StringToListLong(rolestr);
         List<String> permstr= rolePermDao.queryPermIdByRoleIds(roleids);
         List<Long> ids=new ArrayList<Long>();
@@ -49,7 +49,7 @@ public class PermManager {
         List<String> strings=new ArrayList<String>();
         List<Perm> list=new ArrayList<Perm>();
         List<Long> roleids=new ArrayList<Long>();
-        String rolestr= memberRoleDao.queryRolesByMemberId(memberid);
+        String rolestr= memberRoleMapper.queryRolesByMemberId(memberid);
         roleids= StringUtility.StringToListLong(rolestr);
         List<String> permstr= rolePermDao.queryPermIdByRoleIds(roleids);
         List<Long> ids=new ArrayList<Long>();

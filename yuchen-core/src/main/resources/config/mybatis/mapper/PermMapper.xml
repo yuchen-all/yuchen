@@ -4,7 +4,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 
-<mapper namespace="domain.mapper.PermMapper">
+<mapper namespace="yuchen.core.sys.mapper.PermMapper">
     <resultMap id="result" type="perm">
         <id column="id" property="id" jdbcType="BIGINT"></id>
         <result column="parentid" property="parentId" jdbcType="BIGINT"></result>

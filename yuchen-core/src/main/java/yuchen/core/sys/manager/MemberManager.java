@@ -18,38 +18,38 @@ import java.util.List;
 @Component
 public class MemberManager {
     @Autowired
-    private MemberMapper memberDao;
+    private MemberMapper memberMapper;
     @Autowired
-    private MemberRoleMapper memberRoleDao;
+    private MemberRoleMapper memberRoleMapper;
 
     public List<Member> querylist(){
-        return memberDao.querylist();
+        return memberMapper.querylist();
     }
 
     public List<Member> queryPagelist(MemberQuery query){
-        return memberDao.queryPageList(query);
+        return memberMapper.queryPageList(query);
     }
 
     public int queryCountPage(MemberQuery query){
-        return memberDao.queryCountPage(query);
+        return memberMapper.queryCountPage(query);
     }
 
     public Member queryByUsername(String username){
-        return memberDao.queryByUsername(username);
+        return memberMapper.queryByUsername(username);
     }
 
     public Member queryById(Long id){
-        return memberDao.queryById(id);
+        return memberMapper.queryById(id);
     }
 
     @Transactional(rollbackFor = Exception.class)
     public boolean insertmember(Member member,String ids){
-        if (memberDao.insertmember(member)>0){
+        if (memberMapper.insertmember(member)>0){
             MemberRole memberRole=new MemberRole();
             memberRole.setRoleIds(ids);
             memberRole.setMemberId(member.getId());
             memberRole.setCreateTime(new Date());
-            memberRoleDao.insertMemberRole(memberRole);
+            memberRoleMapper.insertMemberRole(memberRole);
             return true;
         }
         return false;
@@ -57,11 +57,11 @@ public class MemberManager {
 
     @Transactional(rollbackFor = Exception.class)
     public int deleteMember(Long id){
-        return memberDao.deleteMember(id);
+        return memberMapper.deleteMember(id);
     }
 
     @Transactional(rollbackFor = Exception.class)
     public int updateStatus(Long memberid,Short status){
-        return memberDao.updateStatus(memberid,status);
+        return memberMapper.updateStatus(memberid,status);
     }
 }

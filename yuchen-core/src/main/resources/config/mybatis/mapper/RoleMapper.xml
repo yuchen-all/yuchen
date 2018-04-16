@@ -4,7 +4,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 
-<mapper namespace="domain.mapper.RoleMapper">
+<mapper namespace="yuchen.core.sys.mapper.RoleMapper">
     <resultMap id="result" type="role">
         <id column="id" property="id" jdbcType="BIGINT" javaType="long"></id>
         <result column="rolename" property="roleName" jdbcType="VARCHAR"></result>

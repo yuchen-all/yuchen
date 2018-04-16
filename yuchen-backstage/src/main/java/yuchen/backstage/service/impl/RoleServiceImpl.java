@@ -76,6 +76,6 @@ public class RoleServiceImpl implements RoleService {
     }
 
     public boolean resetadmin() {
-        return roleManager.resetadmin();
+        return roleManager.resetAdmin();
     }
 }

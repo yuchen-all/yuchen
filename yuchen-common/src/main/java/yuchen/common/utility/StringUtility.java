@@ -11,12 +11,13 @@ import java.util.List;
 public class StringUtility {
     public static List<Long> StringToListLong(String string){
         List<Long> list=new ArrayList<Long>();
-        if (!StringUtils.isEmpty(string)){
-            String[] longs=string.split(",");
-            for (String l:longs) {
-                if (!StringUtils.isEmpty(l)){
-                    list.add(Long.parseLong(l));
-                }
+        if (StringUtils.isEmpty(string)){
+            return null;
+        }
+        String[] longs=string.split(",");
+        for (String l:longs) {
+            if (!StringUtils.isEmpty(l)){
+                list.add(Long.parseLong(l));
             }
         }
         return list;

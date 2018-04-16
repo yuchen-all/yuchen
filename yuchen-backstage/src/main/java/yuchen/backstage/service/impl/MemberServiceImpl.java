@@ -1,6 +1,8 @@
 package yuchen.backstage.service.impl;
 
 import org.apache.commons.beanutils.PropertyUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import yuchen.backstage.service.MemberService;
@@ -25,6 +27,7 @@ import java.util.List;
  */
 @Service
 public class MemberServiceImpl implements MemberService {
+    private static Logger logger = LoggerFactory.getLogger(MemberServiceImpl.class);
     @Autowired
     private RoleManager roleManager;
     @Autowired
@@ -33,7 +36,7 @@ public class MemberServiceImpl implements MemberService {
     private PermManager permManager;
 
     public List<Member> querylist() {
-        return memberManager.querylist();
+        return memberManager.queryList();
     }
 
     public PageModel<MemberDto> queryPageList(MemberQuery query) {
@@ -53,11 +56,13 @@ public class MemberServiceImpl implements MemberService {
             }
             List<MemberRoleDto> liststr=new ArrayList<MemberRoleDto>();
             List<Role> rolelist= roleManager.queryByMemberId(member.getId());
-            for (Role role:rolelist) {
-                MemberRoleDto memberRoleDto=new MemberRoleDto();
-                memberRoleDto.setId(role.getId());
-                memberRoleDto.setName(role.getDisplayName());
-                liststr.add(memberRoleDto);
+            if (rolelist!=null){
+                for (Role role:rolelist) {
+                    MemberRoleDto memberRoleDto=new MemberRoleDto();
+                    memberRoleDto.setId(role.getId());
+                    memberRoleDto.setName(role.getDisplayName());
+                    liststr.add(memberRoleDto);
+                }
             }
             memberDto.setRoles(liststr);
             listDto.add(memberDto);
@@ -73,11 +78,13 @@ public class MemberServiceImpl implements MemberService {
         //List<Role> rolelist= roleDao.queryByMemberId(id);
         List<Role> rolelist=roleManager.queryByMemberId(id);
         List<MemberRoleDto> memberRoleDtos=new ArrayList<MemberRoleDto>();
-        for (Role role:rolelist) {
-            MemberRoleDto memberRoleDto=new MemberRoleDto();
-            memberRoleDto.setId(role.getId());
-            memberRoleDto.setName(role.getDisplayName());
-            memberRoleDtos.add(memberRoleDto);
+        if (rolelist!=null){
+            for (Role role:rolelist) {
+                MemberRoleDto memberRoleDto=new MemberRoleDto();
+                memberRoleDto.setId(role.getId());
+                memberRoleDto.setName(role.getDisplayName());
+                memberRoleDtos.add(memberRoleDto);
+            }
         }
         memberDto.setRoles(memberRoleDtos);
         return memberDto;
@@ -139,7 +146,7 @@ public class MemberServiceImpl implements MemberService {
     }
 
     public Member insertMember(Member member, String roleids) {
-        memberManager.insertmember(member,roleids);
+        memberManager.insertMember(member,roleids);
         return member;
     }
 

@@ -5,7 +5,7 @@
         <input type="text" class="input-text" style="width:250px" placeholder="权限名称" id="perm_url" name="">
         <button type="submit" class="btn btn-success" onclick="searchPerm()" id="" name=""><i class="Hui-iconfont">&#xe665;</i> 搜权限节点</button>
     </div>
-    <div class="cl pd-5 bg-1 bk-gray mt-20">
+    <div class="cl pd-5 bk-gray mt-20">
         <span class="l">
             #if($auth.isPermission("/perm/deleteBatch"))
                 <a href="javascript:;" onclick="del_batch()" class="btn btn-danger radius"><i class="Hui-iconfont">&#xe6e2;</i> 批量删除</a>
@@ -19,7 +19,7 @@
             <table id="perm-table" class="table table-border table-bordered">
                 <thead>
                 <tr>
-                    <th scope="col" colspan="7">权限节点</th>
+                    <th scope="col" colspan="9">权限节点</th>
                 </tr>
                 <tr class="text-c">
                     <th width="25"><input type="checkbox" name="" value=""></th>
@@ -30,25 +30,8 @@
                 </tr>
                 </thead>
                 <tbody>
-##                #foreach($item in $permlist.model)
-##                <tr class="text-c">
-##                    <td><input type="checkbox" value="$!{item.id}" name=""></td>
-##                    <td>$!{item.id}</td>
-##                    <td>$!{item.displayName}</td>
-##                    <td>$!{item.url}</td>
-##                    <td>
-##                        #if($auth.isPermission("/perm/edit"))
-##                            <a title="编辑" href="javascript:;" onclick="admin_permission_edit('角色编辑','$!{request.getContextPath()}/perm/edit?permid=$!{item.id}','1','','800')" class="ml-5" style="text-decoration:none"><i class="Hui-iconfont">&#xe6df;</i></a>
-##                        #end
-##                        #if($auth.isPermission("/perm/delete"))
-##                            <a title="删除" href="javascript:;" onclick="admin_permission_del(this,$!{item.id})" class="ml-5" style="text-decoration:none"><i class="Hui-iconfont">&#xe6e2;</i></a>
-##                        #end
-##                    </td>
-##                </tr>
-##                #end
                 </tbody>
             </table>
-##            #pagination($permlist,"/perm/index?1=1")
         </div>
     </div>
 </div>

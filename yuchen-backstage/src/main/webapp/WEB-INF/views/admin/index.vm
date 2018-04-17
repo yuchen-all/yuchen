@@ -11,7 +11,7 @@
         <input type="text" class="input-text" style="width:250px" placeholder="手机号查询" value="" id="mobile" name="mobile">
         <button class="btn btn-success" onclick="searchMember()" id="" name=""><i class="Hui-iconfont">&#xe665;</i> 搜用户</button>
     </div>
-    <div class="cl pd-5 bg-1 bk-gray mt-20">
+    <div class="cl pd-5 bk-gray mt-20">
         <span class="l">
             #if($auth.isPermission("/admin/deleteBatch"))
                 <a href="javascript:;" onclick="del_batch()" class="btn btn-danger radius"><i class="Hui-iconfont">&#xe6e2;</i> 批量删除</a>
@@ -40,43 +40,8 @@
                 </tr>
                 </thead>
                 <tbody>
-##                #foreach($item in $memberlist.model)
-##                <tr class="text-c">
-##                    <td><input type="checkbox" value="$!{item.id}" name="member_check"></td>
-##                    <td>$!{item.id}</td>
-##                    <td>$!{item.userName}</td>
-##                    <td>$!{item.mobile}</td>
-##                    <td>#foreach($role in $item.roles)
-##                            $!{role.name},
-##                        #end</td>
-##                    <td>$!date.format('yyyy-MM-dd HH:mm:ss',$item.createTime)</td>
-##                    <td class="td-status">
-##                        #if($item.status==1)
-##                            <span class="label label-success radius">已启用</span>
-##                            #else
-##                                <span class="label radius">已禁用</span>
-##                        #end
-##                    </td>
-##                    <td class="td-manage">
-##                        #if($item.id!=$user.id)
-##                            #if($item.status==1 && $auth.isPermission("/admin/stop"))
-##                                <a style="text-decoration:none" onClick="admin_stop(this,$!{item.id})" href="javascript:;" title="停用"><i class="Hui-iconfont">&#xe631;</i></a>
-##                            #end
-##                            #if($item.status==-1 && $auth.isPermission("/admin/start"))
-##                                <a style="text-decoration:none" onClick="admin_start(this,$!{item.id})" href="javascript:;" title="启用"><i class="Hui-iconfont">&#xe615;</i></a>
-##                            #end
-##                            #if($auth.isPermission("/admin/edit"))
-##                                <a title="编辑" href="javascript:;" onclick="admin_edit('管理员编辑','$!{request.getContextPath()}/admin/edit?memberId=$item.id','1','800','500')" class="ml-5" style="text-decoration:none"><i class="Hui-iconfont">&#xe6df;</i></a>
-##                            #end
-##                            #if($auth.isPermission("/admin/delete"))
-##                                <a title="删除" href="javascript:;" onclick="admin_del(this,$!{item.id})" class="ml-5" style="text-decoration:none"><i class="Hui-iconfont">&#xe6e2;</i></a></td>
-##                            #end
-##                        #end
-##                </tr>
-##                #end
                 </tbody>
             </table>
-##            #pagination($memberlist,"/admin/index?1=1")
         </div>
     </div>
 </div>

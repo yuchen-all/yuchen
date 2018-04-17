@@ -1,7 +1,7 @@
 #set($layout =  "share/hi-layout.vm" )
 <nav class="breadcrumb"><i class="Hui-iconfont">&#xe67f;</i> 首页 <span class="c-gray en">&gt;</span> 管理员管理 <span class="c-gray en">&gt;</span> 角色管理 <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新" ><i class="Hui-iconfont">&#xe68f;</i></a></nav>
 <div class="page-container">
-    <div class="cl pd-5 bg-1 bk-gray">
+    <div class="cl pd-5 bk-gray">
         <span class="l">
             #if($auth.isPermission("/role/deleteBatch"))
                 <a href="javascript:;" onclick="del_batch()" class="btn btn-danger radius"><i class="Hui-iconfont">&#xe6e2;</i> 批量删除</a>
@@ -16,7 +16,7 @@
     </div>
     <div class="mt-20">
         <div class="dataTables_wrapper no-footer">
-            <table id="role-table" class="table table-border table-bordered table-hover table-bg">
+            <table id="role-table" class="table table-border table-bordered">
                 <thead>
                 <tr>
                     <th scope="col" colspan="6">角色管理</th>
@@ -30,28 +30,8 @@
                 </tr>
                 </thead>
                 <tbody>
-##                #foreach($item in $rolelist.model)
-##                <tr class="text-c">
-##                    <td><input type="checkbox" value="$!{item.id}" name=""></td>
-##                    <td>$!{item.id}</td>
-##                    <td>$!{item.roleName}</td>
-##                    <td><a href="#">$!{item.displayName}</a></td>
-##                    <td>$!{item.displayName}</td>
-##                    <td class="f-14">
-##                        #if($item.roleName!="admin")
-##                            #if($auth.isPermission("/role/edit"))
-##                                <a title="编辑" href="javascript:;" onclick="admin_role_edit('角色编辑','$!{request.getContextPath()}/role/edit?roleid=$!{item.id}','1')" style="text-decoration:none"><i class="Hui-iconfont">&#xe6df;</i></a>
-##                            #end
-##                            #if($auth.isPermission("/role/delete"))
-##                                <a title="删除" href="javascript:;" onclick="admin_role_del(this,$!{item.id})" class="ml-5" style="text-decoration:none"><i class="Hui-iconfont">&#xe6e2;</i></a>
-##                            #end
-##                        #end
-##                    </td>
-##                </tr>
-##                #end
                 </tbody>
             </table>
-            #pagination($rolelist,"/role/index?1=1")
         </div>
     </div>
 </div>

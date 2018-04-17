@@ -12,6 +12,7 @@ import yuchen.backstage.service.MemberService;
 import yuchen.backstage.service.RoleService;
 import yuchen.common.utility.MD5Utility;
 import yuchen.core.sys.dto.MemberDto;
+import yuchen.core.sys.model.PageDataTable;
 import yuchen.core.sys.model.PageModel;
 import yuchen.core.sys.model.sys.Member;
 import yuchen.core.sys.model.sys.Role;
@@ -36,16 +37,31 @@ public class AdminController extends BaseController {
 
     @Auth(rule = "/admin/index")
     @RequestMapping(value = "/admin/index")
-    public String index(Model model, HttpSession httpSession) throws IllegalAccessException, NoSuchMethodException, InvocationTargetException {
-        MemberQuery query=new MemberQuery();
-        PageModel<MemberDto> list= memberService.queryPageList(query);
-        model.addAttribute("memberlist",list);
+    public String index(Model model,MemberQuery query, HttpSession httpSession) {
+//        PageModel<MemberDto> list= memberService.queryPageList(query);
+//        model.addAttribute("memberlist",list);
+//        model.addAttribute("query",query);
         model.addAttribute("user",getAuthUser(httpSession));
         return "/admin/index";
     }
+
+    @Auth(rule = "/admin/index")
+    @RequestMapping(value = "/admin/ajax")
+    @ResponseBody
+    public PageDataTable<MemberDto> ajax(Model model,MemberQuery query, HttpSession httpSession) {
+        PageModel<MemberDto> list= memberService.queryPageList(query);
+        PageDataTable<MemberDto> pageDataTable = new PageDataTable<>();
+        pageDataTable.setData(list.getModel());
+        pageDataTable.setiTotalRecords(list.getTotalcount());
+        pageDataTable.setiTotalDisplayRecords(list.getTotalcount());
+        pageDataTable.setPageNo(list.getCurrpage());
+        pageDataTable.setiDisplayLength(list.getPagesize());
+        return pageDataTable;
+    }
+
     @Auth(rule = "/admin/add")
     @RequestMapping(value = "/admin/add")
-    public String add(Model model, @RequestParam(value = "memberid",required = false,defaultValue = "0") Long id) throws IllegalAccessException, NoSuchMethodException, InvocationTargetException {
+    public String add(Model model, @RequestParam(value = "memberid",required = false,defaultValue = "0") Long id) {
         MemberDto member=new MemberDto();
         List list= roleService.queryList();
         if (id>0){

@@ -29,6 +29,15 @@
     <select id="queryPageList" resultMap="result">
         <include refid="select_sql" />
         FROM tb_member WHERE del_flag = 1
+        <if test="query.id != null">
+            AND id = #{query.id}
+        </if>
+        <if test="query.username != null">
+            AND username = #{query.username}
+        </if>
+        <if test="query.mobile != null">
+            AND mobile = #{query.mobile}
+        </if>
         limit #{query.startRow},#{query.pageSize}
     </select>
 

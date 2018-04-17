@@ -16,4 +16,10 @@ public class Authority {
         }
         return isauth;
     }
+
+    public String permissionList(){
+        String strings=PermissionUtility.getPerms();
+        return strings;
+    }
+
 }

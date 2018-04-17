@@ -9,5 +9,20 @@
 <script type="text/javascript" src="$!{request.getContextPath()}/resource/lib/jquery.validation/1.14.0/jquery.validate.js"></script>
 <script type="text/javascript" src="$!{request.getContextPath()}/resource/lib/jquery.validation/1.14.0/validate-methods.js"></script>
 <script type="text/javascript" src="$!{request.getContextPath()}/resource/lib/jquery.validation/1.14.0/messages_zh.js"></script>
+<script type="text/javascript" src="$!{request.getContextPath()}/resource/static/core.js"></script>
+<script type="text/javascript">
+    var permissionStr = '$auth.permissionList()';
 
+    function isPermission(perm){
+        var permission = permissionStr.split(',');
+        if (permission && permission.length>0){
+            for (var i=0;i<permission.length;i++){
+                if (perm == permission[i]){
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+</script>
 <!--/_footer /作为公共模版分离出去-->

@@ -1,12 +1,15 @@
 #set($layout =  "share/hi-layout.vm" )
 <nav class="breadcrumb"><i class="Hui-iconfont">&#xe67f;</i> 首页 <span class="c-gray en">&gt;</span> 管理员管理 <span class="c-gray en">&gt;</span> 管理员列表 <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新" ><i class="Hui-iconfont">&#xe68f;</i></a></nav>
 <div class="page-container">
-    <div class="text-c"> 日期范围：
-        <input type="text" onfocus="WdatePicker({maxDate:'#F{$dp.$D(\'datemax\')||\'%y-%M-%d\'}'})" id="datemin" class="input-text Wdate" style="width:120px;">
-        -
-        <input type="text" onfocus="WdatePicker({minDate:'#F{$dp.$D(\'datemin\')}',maxDate:'%y-%M-%d'})" id="datemax" class="input-text Wdate" style="width:120px;">
-        <input type="text" class="input-text" style="width:250px" placeholder="输入管理员名称" id="" name="">
-        <button type="submit" class="btn btn-success" id="" name=""><i class="Hui-iconfont">&#xe665;</i> 搜用户</button>
+    <div class="text-c">
+##        日期范围：
+##        <input type="text" onfocus="WdatePicker({maxDate:'#F{$dp.$D(\'datemax\')||\'%y-%M-%d\'}'})" id="datemin" class="input-text Wdate" style="width:120px;">
+##        -
+##        <input type="text" onfocus="WdatePicker({minDate:'#F{$dp.$D(\'datemin\')}',maxDate:'%y-%M-%d'})" id="datemax" class="input-text Wdate" style="width:120px;">
+        <input type="text" class="input-text" style="width:250px" placeholder="id查询" value="" id="id" name="id">
+        <input type="text" class="input-text" style="width:250px" placeholder="登录名查询" value="" id="username" name="username">
+        <input type="text" class="input-text" style="width:250px" placeholder="手机号查询" value="" id="mobile" name="mobile">
+        <button class="btn btn-success" onclick="searchMember()" id="" name=""><i class="Hui-iconfont">&#xe665;</i> 搜用户</button>
     </div>
     <div class="cl pd-5 bg-1 bk-gray mt-20">
         <span class="l">
@@ -21,7 +24,7 @@
     </div>
     <div class="mt-20">
         <div class="dataTables_wrapper no-footer">
-            <table class="table table-border table-bordered table-bg">
+            <table id="member-table" class="table table-border table-bordered table-bg">
                 <thead>
                 <tr>
                     <th scope="col" colspan="9">员工列表</th>
@@ -38,48 +41,52 @@
                 </tr>
                 </thead>
                 <tbody>
-                #foreach($item in $memberlist.model)
-                <tr class="text-c">
-                    <td><input type="checkbox" value="$!{item.id}" name="member_check"></td>
-                    <td>$!{item.id}</td>
-                    <td>$!{item.userName}</td>
-                    <td>$!{item.mobile}</td>
-                    <td>#foreach($role in $item.roles)
-                            $!{role.name},
-                        #end</td>
-                    <td>$!date.format('yyyy-MM-dd HH:mm:ss',$item.createTime)</td>
-                    <td class="td-status">
-                        #if($item.status==1)
-                            <span class="label label-success radius">已启用</span>
-                            #else
-                                <span class="label radius">已禁用</span>
-                        #end
-                    </td>
-                    <td class="td-manage">
-                        #if($item.id!=$user.id)
-                            #if($item.status==1 && $auth.isPermission("/admin/stop"))
-                                <a style="text-decoration:none" onClick="admin_stop(this,$!{item.id})" href="javascript:;" title="停用"><i class="Hui-iconfont">&#xe631;</i></a>
-                            #end
-                            #if($item.status==-1 && $auth.isPermission("/admin/start"))
-                                <a style="text-decoration:none" onClick="admin_start(this,$!{item.id})" href="javascript:;" title="启用"><i class="Hui-iconfont">&#xe615;</i></a>
-                            #end
-                            #if($auth.isPermission("/admin/edit"))
-                                <a title="编辑" href="javascript:;" onclick="admin_edit('管理员编辑','$!{request.getContextPath()}/admin/edit?memberId=$item.id','1','800','500')" class="ml-5" style="text-decoration:none"><i class="Hui-iconfont">&#xe6df;</i></a>
-                            #end
-                            #if($auth.isPermission("/admin/delete"))
-                                <a title="删除" href="javascript:;" onclick="admin_del(this,$!{item.id})" class="ml-5" style="text-decoration:none"><i class="Hui-iconfont">&#xe6e2;</i></a></td>
-                            #end
-                        #end
-                </tr>
-                #end
+##                #foreach($item in $memberlist.model)
+##                <tr class="text-c">
+##                    <td><input type="checkbox" value="$!{item.id}" name="member_check"></td>
+##                    <td>$!{item.id}</td>
+##                    <td>$!{item.userName}</td>
+##                    <td>$!{item.mobile}</td>
+##                    <td>#foreach($role in $item.roles)
+##                            $!{role.name},
+##                        #end</td>
+##                    <td>$!date.format('yyyy-MM-dd HH:mm:ss',$item.createTime)</td>
+##                    <td class="td-status">
+##                        #if($item.status==1)
+##                            <span class="label label-success radius">已启用</span>
+##                            #else
+##                                <span class="label radius">已禁用</span>
+##                        #end
+##                    </td>
+##                    <td class="td-manage">
+##                        #if($item.id!=$user.id)
+##                            #if($item.status==1 && $auth.isPermission("/admin/stop"))
+##                                <a style="text-decoration:none" onClick="admin_stop(this,$!{item.id})" href="javascript:;" title="停用"><i class="Hui-iconfont">&#xe631;</i></a>
+##                            #end
+##                            #if($item.status==-1 && $auth.isPermission("/admin/start"))
+##                                <a style="text-decoration:none" onClick="admin_start(this,$!{item.id})" href="javascript:;" title="启用"><i class="Hui-iconfont">&#xe615;</i></a>
+##                            #end
+##                            #if($auth.isPermission("/admin/edit"))
+##                                <a title="编辑" href="javascript:;" onclick="admin_edit('管理员编辑','$!{request.getContextPath()}/admin/edit?memberId=$item.id','1','800','500')" class="ml-5" style="text-decoration:none"><i class="Hui-iconfont">&#xe6df;</i></a>
+##                            #end
+##                            #if($auth.isPermission("/admin/delete"))
+##                                <a title="删除" href="javascript:;" onclick="admin_del(this,$!{item.id})" class="ml-5" style="text-decoration:none"><i class="Hui-iconfont">&#xe6e2;</i></a></td>
+##                            #end
+##                        #end
+##                </tr>
+##                #end
                 </tbody>
             </table>
-            #pagination($memberlist,"/admin/index?1=1")
+##            #pagination($memberlist,"/admin/index?1=1")
         </div>
     </div>
 </div>
 #parse("share/hi-footer.vm")
 <script type="text/javascript">
+    var memberTable;
+    jQuery(function($){
+        memberList();
+    })
     /*
         参数解释：
         title	标题
@@ -190,5 +197,140 @@
                 }
             });
         });
+    }
+
+    /*获取操作按钮*/
+    function getAllOperation(row){
+        var status = row.status;
+        var  button;
+        if(status == 1 && isPermission("/admin/stop")){
+            if (!button || button == undefined){
+                button = '<a style="text-decoration:none" onClick="admin_stop(this,'+row.id+')" href="javascript:;" title="停用"><i class="Hui-iconfont">&#xe631;</i></a>'
+            }else {
+                button += '<a style="text-decoration:none" onClick="admin_stop(this,'+row.id+')" href="javascript:;" title="停用"><i class="Hui-iconfont">&#xe631;</i></a>'
+            }
+        }
+        if(status == -1 && isPermission("/admin/start")){
+            if (!button || button == undefined){
+                button = '<a style="text-decoration:none" onClick="admin_start(this,'+row.id+')" href="javascript:;" title="启用"><i class="Hui-iconfont">&#xe615;</i></a>'
+            }else {
+                button += '<a style="text-decoration:none" onClick="admin_start(this,'+row.id+')" href="javascript:;" title="启用"><i class="Hui-iconfont">&#xe615;</i></a>'
+            }
+        }
+        if(isPermission("/admin/edit")){
+            if (!button || button == undefined){
+                button = '<a title="编辑" href="javascript:;" onclick="admin_edit("管理员编辑","memberId='+row.id+'","1","800","500")" class="ml-5" style="text-decoration:none"><i class="Hui-iconfont">&#xe6df;</i></a>'
+            }else {
+                button += '<a title="编辑" href="javascript:;" onclick="admin_edit("管理员编辑","memberId='+row.id+'","1","800","500")" class="ml-5" style="text-decoration:none"><i class="Hui-iconfont">&#xe6df;</i></a>'
+            }
+        }
+        if(isPermission("/admin/delete")){
+            if (!button || button == undefined){
+                button = '<a title="删除" href="javascript:;" onclick="admin_del(this,'+row.id+')" class="ml-5" style="text-decoration:none"><i class="Hui-iconfont">&#xe6e2;</i></a></td>'
+            }else {
+                button += '<a title="删除" href="javascript:;" onclick="admin_del(this,'+row.id+')" class="ml-5" style="text-decoration:none"><i class="Hui-iconfont">&#xe6e2;</i></a></td>'
+            }
+        }
+        return button;
+    }
+
+    function memberList(){
+        memberTable = jQuery('#member-table').dataTable({
+        'bAutoWidth' : false,
+        'bFilter': false,
+        "bLengthChange": false,
+        'bProcessing': true,
+        'bSort': true,
+        'bServerSide': true,
+        'sAjaxSource': '$!{request.getContextPath()}/admin/ajax',
+        'fnServerParams': function(aoData) {
+            getAllSearchValue(aoData);
+        },
+        'aoColumns': [ {
+            'mDataProp' : 'id',
+            'bSortable' : false,
+            'mRender'   : function(data, type, row) {
+                return "<input type='checkbox' value='"+row.id+"' name='member_check'>";
+            }
+        }, {
+            'mDataProp' : 'id',
+            'bSortable' : false
+        }, {
+            'mDataProp' : 'userName',
+            'bSortable' : false
+        }, {
+            'mDataProp': 'mobile',
+            'bSortable': false
+        }, {
+            'mDataProp': 'roles',
+            'bSortable': false,
+            'mRender'   : function(data, type, row) {
+                var rolename = null;
+                if (data){
+                    for (var i= 0;i<data.length;i++){
+                        if(!rolename || rolename == undefined){
+                            rolename = data[i].name;
+                        }else {
+                            rolename = rolename + ',' + data[i].name;
+                        }
+                    }
+                    return rolename;
+                }
+                return "";
+            }
+        }, {
+            'mDataProp': 'createTime',
+            'bSortable': false,
+            'mRender': function(data, type, row) {
+                if (data){
+                    return formatDate(data, "yyyy-mm-dd HH:mm:ss");
+                }
+                return "";
+            }
+        }, {
+            'mDataProp': 'status',
+            'bSortable': false,
+            'mRender': function(data, type, row) {
+                if(data==1){
+                    return '<span class="label label-success radius">已启用</span>'
+                }
+                if (data == -1){
+                    return '<span class="label radius">已禁用</span>'
+                }
+            }
+        }, {
+            'mDataProp': 'operation',
+            'bSortable': false,
+            'mRender': function(data, type, row) {
+                return getAllOperation(row);
+            }
+        }
+        ]
+     })
+    }
+
+    function getAllSearchValue(aoData){
+        if(jQuery('#id').val()){
+            aoData.push({
+               "name": 'id',
+                "value": jQuery('#id').val()
+            });
+        }
+        if(jQuery('#mobile').val()){
+            aoData.push({
+                "name": 'mobile',
+                "value": jQuery('#mobile').val()
+            });
+        }
+        if(jQuery('#username').val()){
+            aoData.push({
+                "name": 'username',
+                "value": jQuery('#username').val()
+            });
+        }
+    }
+
+    function searchMember(){
+        memberTable.fnDraw();
     }
 </script>

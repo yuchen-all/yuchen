@@ -11,6 +11,7 @@ import yuchen.backstage.common.JsonResult;
 import yuchen.backstage.service.PermissionService;
 import yuchen.backstage.service.RoleService;
 import yuchen.core.sys.dto.RolePermDto;
+import yuchen.core.sys.model.PageDataTable;
 import yuchen.core.sys.model.PageModel;
 import yuchen.core.sys.model.sys.Role;
 import yuchen.core.sys.model.sys.query.RoleQuery;
@@ -39,6 +40,21 @@ public class RoleController extends BaseController {
         model.addAttribute("rolelist",list);
         return "/role/index";
     }
+
+    @Auth(rule = "/role/index")
+    @RequestMapping(value = "/role/ajax")
+    @ResponseBody
+    public PageDataTable<Role> ajax(RoleQuery query){
+        PageDataTable<Role> pageDataTable = new PageDataTable<>();
+        PageModel<Role> list=roleService.queryPageList(query);
+        pageDataTable.setData(list.getModel());
+        pageDataTable.setiTotalRecords(list.getTotalcount());
+        pageDataTable.setiTotalDisplayRecords(list.getTotalcount());
+        pageDataTable.setPageNo(list.getCurrpage());
+        pageDataTable.setiDisplayLength(list.getPagesize());
+        return pageDataTable;
+    }
+
     @Auth(rule = "/role/add")
     @RequestMapping(value = "/role/add")
     public String add(Model model){

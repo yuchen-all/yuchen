@@ -29,11 +29,17 @@
     <select id="queryPageList" resultMap="result">
         <include refid="select_sql"/>
         FROM tb_perm WHERE del_flag = 1
+        <if test="query.permUrl != null">
+            AND url = #{query.permUrl}
+        </if>
         limit #{query.startRow},#{query.pageSize}
     </select>
 
     <select id="queryCountPage" resultType="java.lang.Integer">
         SELECT COUNT(1) FROM tb_perm WHERE del_flag = 1
+        <if test="query.permUrl != null">
+            AND url = #{query.permUrl}
+        </if>
     </select>
 
     <select id="queryById" parameterType="long" resultMap="result">

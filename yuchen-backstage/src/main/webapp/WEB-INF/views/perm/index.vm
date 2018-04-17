@@ -2,10 +2,8 @@
 <nav class="breadcrumb"><i class="Hui-iconfont">&#xe67f;</i> 首页 <span class="c-gray en">&gt;</span> 管理员管理 <span class="c-gray en">&gt;</span> 权限管理 <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新" ><i class="Hui-iconfont">&#xe68f;</i></a></nav>
 <div class="page-container">
     <div class="text-c">
-        <form class="Huiform" method="post" action="" target="_self">
-            <input type="text" class="input-text" style="width:250px" placeholder="权限名称" id="" name="">
-            <button type="submit" class="btn btn-success" id="" name=""><i class="Hui-iconfont">&#xe665;</i> 搜权限节点</button>
-        </form>
+        <input type="text" class="input-text" style="width:250px" placeholder="权限名称" id="perm_url" name="">
+        <button type="submit" class="btn btn-success" onclick="searchPerm()" id="" name=""><i class="Hui-iconfont">&#xe665;</i> 搜权限节点</button>
     </div>
     <div class="cl pd-5 bg-1 bk-gray mt-20">
         <span class="l">
@@ -16,10 +14,9 @@
                 <a href="javascript:;" onclick="admin_permission_add('添加权限节点','$!{request.getContextPath()}/perm/add','','800')" class="btn btn-primary radius"><i class="Hui-iconfont">&#xe600;</i> 添加权限节点</a>
             #end
         </span>
-        <span class="r">共有数据：<strong>54</strong> 条</span> </div>
     <div class="mt-20">
         <div class="dataTables_wrapper no-footer">
-            <table class="table table-border table-bordered table-bg">
+            <table id="perm-table" class="table table-border table-bordered">
                 <thead>
                 <tr>
                     <th scope="col" colspan="7">权限节点</th>
@@ -33,31 +30,37 @@
                 </tr>
                 </thead>
                 <tbody>
-                #foreach($item in $permlist.model)
-                <tr class="text-c">
-                    <td><input type="checkbox" value="$!{item.id}" name=""></td>
-                    <td>$!{item.id}</td>
-                    <td>$!{item.displayName}</td>
-                    <td>$!{item.url}</td>
-                    <td>
-                        #if($auth.isPermission("/perm/edit"))
-                            <a title="编辑" href="javascript:;" onclick="admin_permission_edit('角色编辑','$!{request.getContextPath()}/perm/edit?permid=$!{item.id}','1','','800')" class="ml-5" style="text-decoration:none"><i class="Hui-iconfont">&#xe6df;</i></a>
-                        #end
-                        #if($auth.isPermission("/perm/delete"))
-                            <a title="删除" href="javascript:;" onclick="admin_permission_del(this,$!{item.id})" class="ml-5" style="text-decoration:none"><i class="Hui-iconfont">&#xe6e2;</i></a>
-                        #end
-                    </td>
-                </tr>
-                #end
+##                #foreach($item in $permlist.model)
+##                <tr class="text-c">
+##                    <td><input type="checkbox" value="$!{item.id}" name=""></td>
+##                    <td>$!{item.id}</td>
+##                    <td>$!{item.displayName}</td>
+##                    <td>$!{item.url}</td>
+##                    <td>
+##                        #if($auth.isPermission("/perm/edit"))
+##                            <a title="编辑" href="javascript:;" onclick="admin_permission_edit('角色编辑','$!{request.getContextPath()}/perm/edit?permid=$!{item.id}','1','','800')" class="ml-5" style="text-decoration:none"><i class="Hui-iconfont">&#xe6df;</i></a>
+##                        #end
+##                        #if($auth.isPermission("/perm/delete"))
+##                            <a title="删除" href="javascript:;" onclick="admin_permission_del(this,$!{item.id})" class="ml-5" style="text-decoration:none"><i class="Hui-iconfont">&#xe6e2;</i></a>
+##                        #end
+##                    </td>
+##                </tr>
+##                #end
                 </tbody>
             </table>
-            #pagination($permlist,"/perm/index?1=1")
+##            #pagination($permlist,"/perm/index?1=1")
         </div>
     </div>
 </div>
 
 #parse("share/hi-footer.vm")
 <script type="text/javascript">
+    var permTable;
+
+    jQuery(function($){
+        permList();
+    })
+
     /*
         参数解释：
         title	标题
@@ -126,5 +129,78 @@
                 }
             });
         });
+    }
+
+    function permList(){
+        permTable = jQuery('#perm-table').dataTable({
+            'bAutoWidth' : false,
+            'bFilter': false,
+            "bLengthChange": false,
+            'bProcessing': true,
+            'bSort': true,
+            'bServerSide': true,
+            'sAjaxSource': '$!{request.getContextPath()}/perm/ajax',
+            'fnServerParams': function(aoData) {
+                getAllSearchValue(aoData);
+            },
+            'aoColumns': [ {
+                'mDataProp' : 'id',
+                'bSortable' : false,
+                'mRender'   : function(data, type, row) {
+                    return "<input type='checkbox' value='"+row.id+"' name='perm_check'>";
+                }
+            }, {
+                'mDataProp' : 'id',
+                'bSortable' : false
+            }, {
+                'mDataProp' : 'displayName',
+                'bSortable' : false
+            }, {
+                'mDataProp': 'url',
+                'bSortable': false
+            }, {
+                'mDataProp': 'operation',
+                'bSortable': false,
+                'mRender': function(data, type, row) {
+                    return getAllOperation(row);
+                }
+            }
+            ]
+        })
+    }
+
+    /*获取操作按钮*/
+    function getAllOperation(row){
+        var status = row.status;
+        var  button;
+
+        if(isPermission("/perm/edit")){
+            if (!button || button == undefined){
+                button = '<a title="编辑" href="javascript:;" onclick="admin_permission_edit("角色编辑","/perm/edit?permid=' + row.id + '","1","","800")" class="ml-5" style="text-decoration:none"><i class="Hui-iconfont">&#xe6df;</i></a>'
+            }else{
+                button += '<a title="编辑" href="javascript:;" onclick="admin_permission_edit("角色编辑"","/perm/edit?permid=' + row.id + '","1","","800")" class="ml-5" style="text-decoration:none"><i class="Hui-iconfont">&#xe6df;</i></a>'
+            }
+        }
+        if(isPermission("/perm/delete")){
+            if (!button || button == undefined){
+                button = '<a title="删除" href="javascript:;" onclick="admin_permission_del(this,' + row.id + ')" class="ml-5" style="text-decoration:none"><i class="Hui-iconfont">&#xe6e2;</i></a>';
+            }else {
+                button += '<a title="删除" href="javascript:;" onclick="admin_permission_del(this,' + row.id + ')" class="ml-5" style="text-decoration:none"><i class="Hui-iconfont">&#xe6e2;</i></a>';
+            }
+        }
+        return button;
+    }
+
+    function getAllSearchValue(aoData){
+        if(jQuery('#perm_url').val()){
+            aoData.push({
+                "name": 'permUrl',
+                "value": jQuery('#perm_url').val()
+            });
+        }
+    }
+
+    function searchPerm(){
+        permTable.fnDraw();
     }
 </script>

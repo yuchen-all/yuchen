@@ -48,7 +48,7 @@ public class AdminController extends BaseController {
     @Auth(rule = "/admin/index")
     @RequestMapping(value = "/admin/ajax")
     @ResponseBody
-    public PageDataTable<MemberDto> ajax(Model model,MemberQuery query, HttpSession httpSession) {
+    public PageDataTable<MemberDto> ajax(MemberQuery query) {
         PageModel<MemberDto> list= memberService.queryPageList(query);
         PageDataTable<MemberDto> pageDataTable = new PageDataTable<>();
         pageDataTable.setData(list.getModel());

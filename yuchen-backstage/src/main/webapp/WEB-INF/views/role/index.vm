@@ -13,11 +13,10 @@
                 <a href="javascript:;" onclick="admin_role_reset()" class="btn btn-warning radius"> 重置管理员</a>
             #end
         </span>
-        <span class="r">共有数据：<strong>54</strong> 条</span>
     </div>
     <div class="mt-20">
         <div class="dataTables_wrapper no-footer">
-            <table class="table table-border table-bordered table-hover table-bg">
+            <table id="role-table" class="table table-border table-bordered table-hover table-bg">
                 <thead>
                 <tr>
                     <th scope="col" colspan="6">角色管理</th>
@@ -26,31 +25,30 @@
                     <th width="25"><input type="checkbox" value="" name=""></th>
                     <th width="40">ID</th>
                     <th width="200">角色名</th>
-                    <th>用户列表</th>
                     <th width="300">描述</th>
                     <th width="70">操作</th>
                 </tr>
                 </thead>
                 <tbody>
-                #foreach($item in $rolelist.model)
-                <tr class="text-c">
-                    <td><input type="checkbox" value="$!{item.id}" name=""></td>
-                    <td>$!{item.id}</td>
-                    <td>$!{item.roleName}</td>
-                    <td><a href="#">$!{item.displayName}</a></td>
-                    <td>$!{item.displayName}</td>
-                    <td class="f-14">
-                        #if($item.roleName!="admin")
-                            #if($auth.isPermission("/role/edit"))
-                                <a title="编辑" href="javascript:;" onclick="admin_role_edit('角色编辑','$!{request.getContextPath()}/role/edit?roleid=$!{item.id}','1')" style="text-decoration:none"><i class="Hui-iconfont">&#xe6df;</i></a>
-                            #end
-                            #if($auth.isPermission("/role/delete"))
-                                <a title="删除" href="javascript:;" onclick="admin_role_del(this,$!{item.id})" class="ml-5" style="text-decoration:none"><i class="Hui-iconfont">&#xe6e2;</i></a>
-                            #end
-                        #end
-                    </td>
-                </tr>
-                #end
+##                #foreach($item in $rolelist.model)
+##                <tr class="text-c">
+##                    <td><input type="checkbox" value="$!{item.id}" name=""></td>
+##                    <td>$!{item.id}</td>
+##                    <td>$!{item.roleName}</td>
+##                    <td><a href="#">$!{item.displayName}</a></td>
+##                    <td>$!{item.displayName}</td>
+##                    <td class="f-14">
+##                        #if($item.roleName!="admin")
+##                            #if($auth.isPermission("/role/edit"))
+##                                <a title="编辑" href="javascript:;" onclick="admin_role_edit('角色编辑','$!{request.getContextPath()}/role/edit?roleid=$!{item.id}','1')" style="text-decoration:none"><i class="Hui-iconfont">&#xe6df;</i></a>
+##                            #end
+##                            #if($auth.isPermission("/role/delete"))
+##                                <a title="删除" href="javascript:;" onclick="admin_role_del(this,$!{item.id})" class="ml-5" style="text-decoration:none"><i class="Hui-iconfont">&#xe6e2;</i></a>
+##                            #end
+##                        #end
+##                    </td>
+##                </tr>
+##                #end
                 </tbody>
             </table>
             #pagination($rolelist,"/role/index?1=1")
@@ -60,6 +58,12 @@
 
 #parse("share/hi-footer.vm")
 <script type="text/javascript">
+    var roleTable;
+
+    jQuery(function($){
+        roleList();
+    })
+
     /*管理员-角色-添加*/
     function admin_role_add(title,url,w,h){
         layer_show(title,url,w,h);
@@ -140,4 +144,67 @@
             });
         });
     }
+
+    function roleList(){
+        roleTable = jQuery('#role-table').dataTable({
+            'bAutoWidth' : false,
+            'bFilter': false,
+            "bLengthChange": false,
+            'bProcessing': true,
+            'bSort': true,
+            'bServerSide': true,
+            'sAjaxSource': '$!{request.getContextPath()}/role/ajax',
+            'aoColumns': [ {
+                'mDataProp' : 'id',
+                'bSortable' : false,
+                'mRender'   : function(data, type, row) {
+                    return "<input type='checkbox' value='"+row.id+"' name='perm_check'>";
+                }
+            }, {
+                'mDataProp' : 'id',
+                'bSortable' : false
+            }, {
+                'mDataProp' : 'displayName',
+                'bSortable' : false
+            }, {
+                'mDataProp': 'operation',
+                'bSortable': false,
+                'mRender': function(data, type, row) {
+                    return getAllOperation(row);
+                }
+            }
+            ]
+        })
+    }
+
+    /*获取操作按钮*/
+    function getAllOperation(row){
+        var status = row.status;
+        var  button;
+
+        if(isPermission("/role/edit")){
+            if (!button || button == undefined){
+                button = '<a title="编辑" href="javascript:;" onclick="admin_role_edit("角色编辑","/role/edit?roleid='+row.id+'","1")" style="text-decoration:none"><i class="Hui-iconfont">&#xe6df;</i></a>'
+            }else{
+                button += '<a title="编辑" href="javascript:;" onclick="admin_role_edit("角色编辑","/role/edit?roleid='+row.id+'","1")" style="text-decoration:none"><i class="Hui-iconfont">&#xe6df;</i></a>'
+            }
+        }
+        if(isPermission("/role/delete")){
+            if (!button || button == undefined){
+                button = '<a title="删除" href="javascript:;" onclick="admin_role_del(this,'+row.id+')" class="ml-5" style="text-decoration:none"><i class="Hui-iconfont">&#xe6e2;</i></a>';
+            }else {
+                button += '<a title="删除" href="javascript:;" onclick="admin_role_del('+row.id+')" class="ml-5" style="text-decoration:none"><i class="Hui-iconfont">&#xe6e2;</i></a>';
+            }
+        }
+        return button;
+    }
+
+//    function getAllSearchValue(aoData){
+//        if(jQuery('#perm_url').val()){
+//            aoData.push({
+//                "name": 'permUrl',
+//                "value": jQuery('#perm_url').val()
+//            });
+//        }
+//    }
 </script>

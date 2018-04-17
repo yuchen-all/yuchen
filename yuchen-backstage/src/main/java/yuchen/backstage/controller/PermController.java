@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import yuchen.backstage.annotation.Auth;
 import yuchen.backstage.common.JsonResult;
 import yuchen.backstage.service.PermissionService;
+import yuchen.core.sys.model.PageDataTable;
 import yuchen.core.sys.model.PageModel;
 import yuchen.core.sys.model.sys.Perm;
 import yuchen.core.sys.model.sys.query.PermQuery;
@@ -33,10 +34,25 @@ public class PermController extends BaseController {
         if (currPage!=null){
             query.setCurrPage(currPage);
         }
-        PageModel<Perm> list= permissionService.queryPageList(query);
-        model.addAttribute("permlist",list);
+//        PageModel<Perm> list= permissionService.queryPageList(query);
+//        model.addAttribute("permlist",list);
         return "/perm/index";
     }
+
+    @Auth(rule = "/perm/index")
+    @RequestMapping(value = "/perm/ajax")
+    @ResponseBody
+    public PageDataTable<Perm> ajax(PermQuery query){
+        PageDataTable<Perm> pageDataTable = new PageDataTable<>();
+        PageModel<Perm> list= permissionService.queryPageList(query);
+        pageDataTable.setData(list.getModel());
+        pageDataTable.setiTotalRecords(list.getTotalcount());
+        pageDataTable.setiTotalDisplayRecords(list.getTotalcount());
+        pageDataTable.setPageNo(list.getCurrpage());
+        pageDataTable.setiDisplayLength(list.getPagesize());
+        return pageDataTable;
+    }
+
     @Auth(rule = "/perm/add")
     @RequestMapping(value = "/perm/add")
     public String add(Model model){

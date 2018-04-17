@@ -9,7 +9,9 @@
     </div>
     <div class="cl pd-5 bg-1 bk-gray mt-20">
         <span class="l">
-            <a href="javascript:;" onclick="datadel()" class="btn btn-danger radius"><i class="Hui-iconfont">&#xe6e2;</i> 批量删除</a>
+            #if($auth.isPermission("/perm/deleteBatch"))
+                <a href="javascript:;" onclick="del_batch()" class="btn btn-danger radius"><i class="Hui-iconfont">&#xe6e2;</i> 批量删除</a>
+            #end
             #if($auth.isPermission("/perm/add"))
                 <a href="javascript:;" onclick="admin_permission_add('添加权限节点','$!{request.getContextPath()}/perm/add','','800')" class="btn btn-primary radius"><i class="Hui-iconfont">&#xe600;</i> 添加权限节点</a>
             #end
@@ -83,6 +85,39 @@
                 success: function (data) {
                     if (data.code > 0) {
                         layer.msg('已删除!',{icon:1,time:1000});
+                        javascript:location.replace(location.href);
+                    }
+                    else {
+                        layer.msg(data.msg,{icon:1,time:1000});
+                    }
+                }
+            });
+        });
+    }
+
+    /*批量删除*/
+    function del_batch(){
+        layer.confirm('确认要删除吗？',function(index){
+            var ids = null;
+            jQuery.each(jQuery('input:checkbox:checked'),function(){
+                if(!ids){
+                    ids = $(this).val();
+                }else {
+                    ids = ids + ',' + $(this).val();
+                }
+            });
+            if(!ids || ids == undefined){
+                layer.msg('参数为空!', {icon: 1,time:1000});
+                return;
+            }
+            //此处请求后台程序，下方是成功后的前台处理……
+            jQuery.ajax({
+                url: '$!{request.getContextPath()}/perm/deleteBatch',
+                data: {ids:ids},
+                type: "post",
+                success: function (data) {
+                    if (data.code > 0) {
+                        layer.msg('删除成功!', {icon: 6,time:1000});
                         javascript:location.replace(location.href);
                     }
                     else {

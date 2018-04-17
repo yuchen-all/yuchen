@@ -1,5 +1,8 @@
 package yuchen.backstage.service.impl;
 
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import yuchen.backstage.service.PermissionService;
@@ -19,6 +22,7 @@ import java.util.Set;
  */
 @Service
 public class PermissionServiceImpl implements PermissionService {
+    private static Logger logger = LoggerFactory.getLogger(PermissionServiceImpl.class);
     @Autowired
     private PermManager permManager;
     public PageModel<Perm> queryPageList(PermQuery query) {
@@ -82,5 +86,25 @@ public class PermissionServiceImpl implements PermissionService {
             stringSet.add(url);
         }
         return stringSet;
+    }
+
+    @Override
+    public boolean deleteBatch(String ids) {
+        try {
+            if (StringUtils.isEmpty(ids)){
+                return false;
+            }
+            List<Long> idList = new ArrayList<>();
+            String[] idArray = ids.split(",");
+            if (idArray!=null && idArray.length>0){
+                for (String idstr:idArray) {
+                    idList.add(Long.parseLong(idstr));
+                }
+            }
+            return permManager.deleteBatch(idList);
+        } catch (Exception e) {
+            logger.error("PermServiceImpl.deleteBatch异常",e);
+        }
+        return false;
     }
 }

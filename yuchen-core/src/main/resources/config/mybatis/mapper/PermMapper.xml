@@ -147,4 +147,12 @@
     <delete id="deleteById" parameterType="long">
         UPDATE tb_perm SET del_flag = -1 WHERE id=#{id}
     </delete>
+
+    <delete id="deleteBatch" >
+        UPDATE tb_perm SET del_flag = -1
+        WHERE
+        <foreach collection="ids" item="id" index="index" separator="OR" open="(" close=")">
+            id=#{id}
+        </foreach>
+    </delete>
 </mapper>

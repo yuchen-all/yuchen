@@ -1,5 +1,6 @@
 package yuchen.backstage.controller;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -114,6 +115,19 @@ public class PermController extends BaseController {
         if (permissionService.deletePerm(id)>0){
             return jsonResult(1,"删除成功");
         }
+        return jsonResult(-1,"删除失败");
+    }
+
+    @Auth(rule = "/perm/deleteBatch")
+    @ResponseBody
+    @RequestMapping(value = "/perm/deleteBatch")
+    public JsonResult deleteBatch(@RequestParam(value = "ids") String ids){
+        if (StringUtils.isEmpty(ids)){
+            return jsonResult(-1,"参数为空");
+        }
+//        if (memberService.deleteBatch(ids)){
+//            return jsonResult(1,"删除成功");
+//        }
         return jsonResult(-1,"删除失败");
     }
 }

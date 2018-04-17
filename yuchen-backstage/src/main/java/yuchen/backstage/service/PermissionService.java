@@ -27,4 +27,6 @@ public interface PermissionService {
     int updatePerm(Perm perm);
 
     int deletePerm(Long id);
+
+    boolean deleteBatch(String ids);
 }

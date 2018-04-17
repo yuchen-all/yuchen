@@ -1,5 +1,6 @@
 package yuchen.backstage.controller;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -105,5 +106,18 @@ public class RoleController extends BaseController {
             return jsonResult(1,"重置成功");
         }
         return jsonResult(-1,"重置失败");
+    }
+
+    @Auth(rule = "/role/deleteBatch")
+    @ResponseBody
+    @RequestMapping(value = "/role/deleteBatch")
+    public JsonResult deleteBatch(@RequestParam(value = "ids") String ids){
+        if (StringUtils.isEmpty(ids)){
+            return jsonResult(-1,"参数为空");
+        }
+//        if (memberService.deleteBatch(ids)){
+//            return jsonResult(1,"删除成功");
+//        }
+        return jsonResult(-1,"删除失败");
     }
 }

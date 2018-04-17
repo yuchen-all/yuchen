@@ -35,4 +35,6 @@ public interface PermMapper {
     int updateById(Perm perm);
 
     int deleteById(Long id);
+
+    int deleteBatch(@Param("ids")List ids);
 }

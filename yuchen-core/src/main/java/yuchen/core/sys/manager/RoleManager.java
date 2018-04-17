@@ -156,4 +156,16 @@ public class RoleManager {
         Role role=new Role();
         return role;
     }
+
+    public boolean deleteBatch(List<Long> ids){
+        try {
+            if (permMapper.deleteBatch(ids)>0){
+                return true;
+            }
+        } catch (Exception e) {
+            logger.error("RoleManager.deleteBatch异常",e);
+            throw e;
+        }
+        return false;
+    }
 }

@@ -27,4 +27,6 @@ public interface RoleMapper {
     Role queryByName(String name);
 
     int deleteRole(Long id);
+
+    int deleteBatch(@Param("ids")List ids);
 }

@@ -27,4 +27,6 @@ public interface RoleService {
     int deleteRole(Long id);
 
     boolean resetadmin();
+
+    boolean deleteBatch(String ids);
 }

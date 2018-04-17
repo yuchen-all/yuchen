@@ -1,6 +1,9 @@
 package yuchen.backstage.service.impl;
 
 import org.apache.commons.beanutils.PropertyUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import yuchen.backstage.service.RoleService;
@@ -21,6 +24,7 @@ import java.util.List;
  */
 @Service
 public class RoleServiceImpl implements RoleService {
+    private static Logger logger = LoggerFactory.getLogger(RoleServiceImpl.class);
     @Autowired
     private PermManager permManager;
     @Autowired
@@ -77,5 +81,25 @@ public class RoleServiceImpl implements RoleService {
 
     public boolean resetadmin() {
         return roleManager.resetAdmin();
+    }
+
+    @Override
+    public boolean deleteBatch(String ids) {
+        try {
+            if (StringUtils.isEmpty(ids)){
+                return false;
+            }
+            List<Long> idList = new ArrayList<>();
+            String[] idArray = ids.split(",");
+            if (idArray!=null && idArray.length>0){
+                for (String idstr:idArray) {
+                    idList.add(Long.parseLong(idstr));
+                }
+            }
+            return roleManager.deleteBatch(idList);
+        } catch (Exception e) {
+            logger.error("RoleServiceImpl.deleteBatch异常",e);
+        }
+        return false;
     }
 }

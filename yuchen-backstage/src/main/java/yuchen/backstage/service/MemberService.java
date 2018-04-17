@@ -33,4 +33,6 @@ public interface MemberService {
     Member queryById(Long id);
 
     boolean updateMember(Member member,String roleids);
+
+    boolean deleteBatch(String ids);
 }

@@ -73,6 +73,7 @@ public class MemberManager {
     @Transactional(rollbackFor = Exception.class)
     public boolean insertMember(Member member,String ids){
         try {
+            member.setDelFlag(1);
             if (memberMapper.insertMember(member)>0){
                 MemberRole memberRole=new MemberRole();
                 memberRole.setRoleIds(ids);
@@ -117,6 +118,18 @@ public class MemberManager {
             }
         } catch (Exception e) {
             logger.error("MemberManager.updateMember异常",e);
+            throw e;
+        }
+        return false;
+    }
+
+    public boolean deleteBatch(List<Long> ids){
+        try {
+            if (memberMapper.deleteBatch(ids)>0){
+                return true;
+            }
+        } catch (Exception e) {
+            logger.error("MemberManager.deleteBatch异常",e);
             throw e;
         }
         return false;

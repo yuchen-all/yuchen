@@ -10,12 +10,13 @@ import java.util.Date;
 public class Perm extends BaseModel {
     private Long id;
     private Long parentId;
-    private Integer type;
+    private Integer permType;
     private String displayName;
     private String url;
     private String remark;
     private Date createTime;
     private Date updateTime;
+    private Integer delFlag;
 
     public Long getId() {
         return id;
@@ -33,12 +34,12 @@ public class Perm extends BaseModel {
         this.parentId = parentId;
     }
 
-    public Integer getType() {
-        return type;
+    public Integer getPermType() {
+        return permType;
     }
 
-    public void setType(Integer type) {
-        this.type = type;
+    public void setPermType(Integer permType) {
+        this.permType = permType;
     }
 
     public String getDisplayName() {
@@ -79,5 +80,13 @@ public class Perm extends BaseModel {
 
     public void setUpdateTime(Date updateTime) {
         this.updateTime = updateTime;
+    }
+
+    public Integer getDelFlag() {
+        return delFlag;
+    }
+
+    public void setDelFlag(Integer delFlag) {
+        this.delFlag = delFlag;
     }
 }

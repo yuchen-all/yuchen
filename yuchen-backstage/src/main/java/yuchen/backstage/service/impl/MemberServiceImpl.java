@@ -1,6 +1,7 @@
 package yuchen.backstage.service.impl;
 
 import org.apache.commons.beanutils.PropertyUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -176,5 +177,25 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public boolean updateMember(Member member, String roleids) {
         return memberManager.updateMember(member,roleids);
+    }
+
+    @Override
+    public boolean deleteBatch(String ids) {
+        try {
+            if (StringUtils.isEmpty(ids)){
+                return false;
+            }
+            List<Long> idList = new ArrayList<>();
+            String[] idArray = ids.split(",");
+            if (idArray!=null && idArray.length>0){
+                for (String idstr:idArray) {
+                    idList.add(Long.parseLong(idstr));
+                }
+            }
+            return memberManager.deleteBatch(idList);
+        } catch (Exception e) {
+            logger.error("MemberServiceImpl.deleteBatch异常",e);
+        }
+        return false;
     }
 }

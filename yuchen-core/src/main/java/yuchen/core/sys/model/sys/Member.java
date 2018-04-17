@@ -9,17 +9,30 @@ import java.util.Date;
  */
 public class Member extends BaseModel {
     private Long id;
-    private String phone;
+
+    private String mobile;
+
     private String userName;
+
     private String displayName;
+
     private String imgUrl;
+
     private String password;
+
     private String address;
+
     private Short sex;
+
     private Date createTime;
+
     private Date updateTime;
+
     private String remark;
+
     private Short status;
+
+    private Integer delFlag;
 
     public Long getId() {
         return id;
@@ -29,12 +42,12 @@ public class Member extends BaseModel {
         this.id = id;
     }
 
-    public String getPhone() {
-        return phone;
+    public String getMobile() {
+        return mobile;
     }
 
-    public void setPhone(String phone) {
-        this.phone = phone;
+    public void setMobile(String mobile) {
+        this.mobile = mobile;
     }
 
     public String getUserName() {
@@ -115,5 +128,13 @@ public class Member extends BaseModel {
 
     public void setStatus(Short status) {
         this.status = status;
+    }
+
+    public Integer getDelFlag() {
+        return delFlag;
+    }
+
+    public void setDelFlag(Integer delFlag) {
+        this.delFlag = delFlag;
     }
 }

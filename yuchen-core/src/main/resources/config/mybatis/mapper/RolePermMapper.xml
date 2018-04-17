@@ -7,45 +7,45 @@
 <mapper namespace="yuchen.core.sys.mapper.RolePermMapper">
     <resultMap id="result" type="roleperm">
         <id column="id" property="id" jdbcType="BIGINT"></id>
-        <result column="roleid" property="roleId" jdbcType="BIGINT"></result>
+        <result column="role_id" property="roleId" jdbcType="BIGINT"></result>
         <result column="permids" property="permIds" jdbcType="VARCHAR"></result>
         <result column="create_time" property="createTime" jdbcType="DATE"></result>
         <result column="update_time" property="updateTime" javaType="DATE"></result>
     </resultMap>
 
     <sql id="select_sql">
-        SELECT id,roleid,permids,create_time,update_time
+        SELECT id,role_id,permids,create_time,update_time
     </sql>
 
     <select id="queryPermIdByRoleIds" resultType="string">
         SELECT permids FROM tb_role_perm WHERE
         <foreach collection="list" item="role" index="index" separator="OR">
-            roleid=#{role}
+            role_id=#{role}
         </foreach>
     </select>
     
     <select id="queryPermsByRoleId" parameterType="long" resultType="string">
-        SELECT permids FROM tb_role_perm WHERE roleid=#{roleid}
+        SELECT permids FROM tb_role_perm WHERE role_id=#{roleid}
     </select>
 
     <select id="queryByRoleId" parameterType="long" resultMap="result">
         <include refid="select_sql"/>
-        FROM tb_role_perm WHERE roleid=#{roleid}
+        FROM tb_role_perm WHERE role_id=#{roleid}
     </select>
 
     <insert id="insertRolePerm" parameterType="roleperm">
-        INSERT INTO tb_role_perm (roleid,permids,create_time,update_time) VALUES (#{roleId},#{permIds},#{createTime},#{updateTime})
+        INSERT INTO tb_role_perm (role_id,permids,create_time,update_time) VALUES (#{roleId},#{permIds},#{createTime},#{updateTime})
     </insert>
 
     <update id="updateById" parameterType="roleperm">
-        UPDATE tb_role_perm SET roleid=#{roleId},permids=#{permIds},update_time=#{updateTime} WHERE id=#{id}
+        UPDATE tb_role_perm SET role_id=#{roleId},permids=#{permIds},update_time=#{updateTime} WHERE id=#{id}
     </update>
 
     <update id="updateByRoleId" parameterType="roleperm">
-        UPDATE tb_role_perm SET permids=#{permIds},update_time=#{updateTime} WHERE roleid=#{roleId}
+        UPDATE tb_role_perm SET permids=#{permIds},update_time=#{updateTime} WHERE role_id=#{roleId}
     </update>
 
     <delete id="deleteByRoleId" parameterType="long">
-        DELETE FROM tb_role_perm WHERE roleid=#{roleid}
+        DELETE FROM tb_role_perm WHERE role_id=#{roleid}
     </delete>
 </mapper>

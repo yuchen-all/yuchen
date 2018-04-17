@@ -10,10 +10,11 @@
         <result column="memberid" property="memberId" jdbcType="BIGINT"></result>
         <result column="roleids" property="roleIds" jdbcType="VARCHAR"></result>
         <result column="create_time" property="createTime" jdbcType="DATE"></result>
+        <result column="update_time" property="createTime" jdbcType="DATE"></result>
     </resultMap>
 
     <sql id="select_sql">
-        SELECT id,memberid,roleids,create_time
+        SELECT id,memberid,roleids,create_time,update_time
     </sql>
 
     <select id="queryRolesByMemberId" parameterType="long" resultType="string">
@@ -21,7 +22,7 @@
     </select>
     
     <insert id="insertMemberRole" parameterType="memberrole">
-        INSERT INTO tb_member_role(memberid,roleids,create_time) VALUES (#{memberId},#{roleIds},#{createTime})
+        INSERT INTO tb_member_role(memberid,roleids,create_time,update_time) VALUES (#{memberId},#{roleIds},#{createTime},#{updateTime})
     </insert>
 
     <delete id="deleteByMemberId" parameterType="long">

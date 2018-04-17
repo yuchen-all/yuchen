@@ -132,6 +132,7 @@ public class PermManager {
 
     public int insertPerm(Perm perm){
         try {
+            perm.setDelFlag(1);
             return permMapper.insertPerm(perm);
         } catch (Exception e) {
             logger.error("PermManager.insertPerm异常",e);

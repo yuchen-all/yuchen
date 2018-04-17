@@ -8,7 +8,7 @@
     
     <resultMap id="result" type="member">
         <id column="id" property="id" jdbcType="BIGINT" ></id>
-        <result column="phone" property="phone" jdbcType="VARCHAR"></result>
+        <result column="mobile" property="mobile" jdbcType="VARCHAR"></result>
         <result column="username" property="userName" jdbcType="VARCHAR"></result>
         <result column="displayname" property="displayName" jdbcType="VARCHAR"></result>
         <result column="img_url" property="imgUrl" jdbcType="VARCHAR"></result>
@@ -19,40 +19,41 @@
         <result column="update_time" property="updateTime" ></result>
         <result column="remark" property="remark" jdbcType="VARCHAR"></result>
         <result column="status" property="status" jdbcType="INTEGER"></result>
+        <result column="del_flag" property="delFlag" jdbcType="INTEGER"></result>
     </resultMap>
     
     <sql id="select_sql">
-        SELECT id,phone,username,displayname,sex,img_url,password,address,create_time,update_time,remark,status
+        SELECT id,mobile,username,displayname,sex,img_url,password,address,create_time,update_time,remark,status,del_flag
     </sql>
 
     <select id="queryPageList" resultMap="result">
         <include refid="select_sql" />
-        FROM tb_member
+        FROM tb_member WHERE del_flag = 1
         limit #{query.startRow},#{query.pageSize}
     </select>
 
     <select id="queryCountPage" resultType="java.lang.Integer">
-        SELECT COUNT(1) FROM tb_member
+        SELECT COUNT(1) FROM tb_member WHERE del_flag = 1
     </select>
 
     <select id="queryById" parameterType="long" resultMap="result">
         <include refid="select_sql"/>
-        FROM tb_member WHERE id=#{id}
+        FROM tb_member WHERE id=#{id} AND del_flag = 1
     </select>
 
     <select id="queryByUsername" parameterType="string" resultMap="result">
         <include refid="select_sql" />
-        FROM tb_member WHERE username=#{username}
+        FROM tb_member WHERE username=#{username} AND del_flag = 1
     </select>
 
     <select id="queryList" resultMap="result">
         <include refid="select_sql"/>
-        FROM tb_member
+        FROM tb_member WHERE del_flag = 1
     </select>
     
     <insert id="insertMember" parameterType="member" useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO tb_member(phone,username,displayname,img_url,password,address,sex,create_time,update_time,remark,status)
-        VALUES (#{phone},#{userName},#{displayName},#{imgUrl},#{password},#{address},#{sex},#{createTime},#{updateTime},#{remark},#{status})
+        INSERT INTO tb_member(mobile,username,displayname,img_url,password,address,sex,create_time,update_time,remark,status,del_flag)
+        VALUES (#{mobile},#{userName},#{displayName},#{imgUrl},#{password},#{address},#{sex},#{createTime},#{updateTime},#{remark},#{status},#{delFlag})
     </insert>
 
     <delete id="deleteMember" parameterType="long">
@@ -66,8 +67,8 @@
     <update id="updateMember" parameterType="member">
         UPDATE tb_member
         <set>
-            <if test="member.phone != null">
-                phone = #{member.phone,jdbcType=VARCHAR},
+            <if test="member.mobile != null">
+                mobile = #{member.mobile,jdbcType=VARCHAR},
             </if>
             <if test="member.userName != null">
                 username = #{member.userName,jdbcType=VARCHAR},
@@ -96,7 +97,18 @@
             <if test="member.updateTime != null">
                 update_time = #{member.updateTime},
             </if>
+            <if test="member.delFlag != null">
+                del_flag = #{member.delFlag},
+            </if>
         </set>
         WHERE id=#{member.id}
     </update>
+
+    <delete id="deleteBatch" >
+        UPDATE tb_member SET del_flag = -1
+        WHERE
+        <foreach collection="ids" item="id" index="index" separator="OR" open="(" close=")">
+            id=#{id}
+        </foreach>
+    </delete>
 </mapper>

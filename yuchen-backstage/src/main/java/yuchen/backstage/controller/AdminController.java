@@ -1,5 +1,6 @@
 package yuchen.backstage.controller;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -66,7 +67,7 @@ public class AdminController extends BaseController {
             oldMember.setUserName(member.getUserName());
             oldMember.setDisplayName(member.getDisplayName());
             oldMember.setSex(member.getSex());
-            oldMember.setPhone(member.getPhone());
+            oldMember.setMobile(member.getMobile());
             oldMember.setRemark(member.getRemark());
             if (memberService.updateMember(oldMember,ids)){
                 return jsonResult(1,"修改成功");
@@ -120,4 +121,18 @@ public class AdminController extends BaseController {
         }
         return jsonResult(-1,"删除失败");
     }
+
+    @Auth(rule = "/admin/deleteBatch")
+    @ResponseBody
+    @RequestMapping(value = "/admin/deleteBatch")
+    public JsonResult deleteBatch(@RequestParam(value = "ids") String ids){
+        if (StringUtils.isEmpty(ids)){
+            return jsonResult(-1,"参数为空");
+        }
+        if (memberService.deleteBatch(ids)){
+            return jsonResult(1,"删除成功");
+        }
+        return jsonResult(-1,"删除失败");
+    }
+
 }

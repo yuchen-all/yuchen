@@ -14,6 +14,7 @@ public class Role extends BaseModel {
     private String remark;
     private Date createTime;
     private Date updateTime;
+    private Integer delFlag;
 
     public Long getId() {
         return id;
@@ -61,5 +62,13 @@ public class Role extends BaseModel {
 
     public void setUpdateTime(Date updateTime) {
         this.updateTime = updateTime;
+    }
+
+    public Integer getDelFlag() {
+        return delFlag;
+    }
+
+    public void setDelFlag(Integer delFlag) {
+        this.delFlag = delFlag;
     }
 }

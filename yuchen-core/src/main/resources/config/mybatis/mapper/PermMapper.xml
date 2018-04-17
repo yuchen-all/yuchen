@@ -7,66 +7,84 @@
 <mapper namespace="yuchen.core.sys.mapper.PermMapper">
     <resultMap id="result" type="perm">
         <id column="id" property="id" jdbcType="BIGINT"></id>
-        <result column="parentid" property="parentId" jdbcType="BIGINT"></result>
-        <result column="permtype" property="type" jdbcType="INTEGER"></result>
+        <result column="parent_id" property="parentId" jdbcType="BIGINT"></result>
+        <result column="perm_type" property="permType" jdbcType="INTEGER"></result>
         <result column="displayname" property="displayName" jdbcType="VARCHAR"></result>
         <result column="url" property="url" jdbcType="VARCHAR"></result>
         <result column="remark" property="remark" jdbcType="VARCHAR"></result>
         <result column="create_time" property="createTime" jdbcType="DATE"></result>
         <result column="update_time" property="updateTime" jdbcType="DATE"></result>
+        <result column="del_flag" property="delFlag" jdbcType="INTEGER"></result>
     </resultMap>
 
     <sql id="select_sql">
-        SELECT id,parentid,permtype,displayname,url,remark,create_time,update_time
+        SELECT id,parent_id,perm_type,displayname,url,remark,create_time,update_time,del_flag
     </sql>
 
     <select id="queryList" resultMap="result">
         <include refid="select_sql"/>
-        FROM tb_perm
+        FROM tb_perm WHERE del_flag = 1
     </select>
 
     <select id="queryPageList" resultMap="result">
         <include refid="select_sql"/>
-        FROM tb_perm
+        FROM tb_perm WHERE del_flag = 1
         limit #{query.startRow},#{query.pageSize}
     </select>
 
     <select id="queryCountPage" resultType="java.lang.Integer">
-        SELECT COUNT(1) FROM tb_perm
+        SELECT COUNT(1) FROM tb_perm WHERE del_flag = 1
     </select>
 
     <select id="queryById" parameterType="long" resultMap="result">
         <include refid="select_sql"/>
-        FROM tb_perm WHERE id=#{id}
+        FROM tb_perm WHERE id=#{id} AND del_flag = 1
     </select>
 
     <select id="queryByParentId" parameterType="long" resultMap="result">
         <include refid="select_sql"/>
-        FROM tb_perm WHERE parentid=#{id}
+        FROM tb_perm WHERE parent_id=#{id} AND del_flag = 1
     </select>
 
     <select id="queryByType" resultMap="result">
         <include refid="select_sql"/>
-        FROM tb_perm WHERE
-        <foreach collection="list" item="type" index="index" separator="OR">
-            permtype=#{type}
-        </foreach>
+        FROM tb_perm
+        <where>
+            del_flag = 1
+            <if test="list != null">
+                AND
+                <foreach collection="list" item="type" index="index" separator="OR">
+                    perm_type=#{type}
+                </foreach>
+            </if>
+        </where>
     </select>
 
     <select id="queryByIdsAndType" resultMap="result">
         <include refid="select_sql"/>
-        FROM tb_perm WHERE
-        <foreach collection="ids" item="id" index="index" separator="OR" open="(" close=")">
-            id=#{id}
-        </foreach>
-        AND permtype=#{type}
+        FROM tb_perm
+        <where>
+            del_flag = 1
+            <if test="ids != null">
+                AND
+                <foreach collection="ids" item="id" index="index" separator="OR" open="(" close=")">
+                    id=#{id}
+                </foreach>
+            </if>
+        </where>
     </select>
 
     <select id="queryUrlByListId" resultType="string">
-        SELECT url FROM tb_perm WHERE
-        <foreach collection="list" item="id" index="index" separator="OR">
-            id=#{id}
-        </foreach>
+        SELECT url FROM tb_perm
+        <where>
+            del_flag = 1
+            <if test="list != null">
+                AND
+                <foreach collection="list" item="id" index="index" separator="OR">
+                    id=#{id}
+                </foreach>
+            </if>
+        </where>
     </select>
 
     <select id="queryIds" resultType="string">
@@ -75,25 +93,34 @@
 
     <select id="queryByIdsAndParentId" resultMap="result">
         <include refid="select_sql"/>
-        FROM tb_perm WHERE
-        <foreach collection="ids" item="id" index="index" separator="OR" open="(" close=")">
-            id=#{id}
-        </foreach>
-        AND parentid=#{parentid}
+        FROM tb_perm
+        <where>
+            del_flag = 1
+            <if test="ids != null">
+                AND
+                <foreach collection="ids" item="id" index="index" separator="OR" open="(" close=")">
+                    id=#{id}
+                </foreach>
+            </if>
+            <if test="parentId != null">
+                AND parent_id=#{parentId}
+            </if>
+        </where>
     </select>
     
     <insert id="insertPerm" parameterType="perm">
-        INSERT INTO tb_perm(parentid,permtype,displayname,url,remark,create_time,update_time) VALUES (#{parentId},#{type},#{displayName},#{url},#{remark},#{createTime},#{updateTime})
+        INSERT INTO tb_perm(parent_id,perm_type,displayname,url,remark,create_time,update_time,del_flag)
+        VALUES (#{parentId},#{permType},#{displayName},#{url},#{remark},#{createTime},#{updateTime},#{delFlag})
     </insert>
 
-    <update id="updateById" parameterType="perm">
+    <update id="updateById" parameterType="yuchen.core.sys.model.sys.Perm">
         UPDATE tb_perm 
         <set>
             <if test="parentId!=null">
-                parentid=#{parentId},
+                parent_id=#{parentId},
             </if>
-            <if test="type!=null">
-                permtype=#{type},
+            <if test="permType!=null">
+                perm_type=#{permType},
             </if>
             <if test="displayName!=null">
                 displayname=#{displayName},
@@ -110,11 +137,14 @@
             <if test="updateTime!=null">
                 update_time=#{updateTime},
             </if>
+            <if test="delFlag!=null">
+                del_flag=#{delFlag},
+            </if>
         </set>
         WHERE id=#{id}
     </update>
 
     <delete id="deleteById" parameterType="long">
-        DELETE FROM tb_perm WHERE id=#{id}
+        UPDATE tb_perm SET del_flag = -1 WHERE id=#{id}
     </delete>
 </mapper>

@@ -27,4 +27,6 @@ public interface MemberMapper {
     int updateStatus(@Param("memberid") Long memberid, @Param("status") Short status);
 
     int updateMember(@Param("member")Member member);
+
+    int deleteBatch(@Param("ids")List ids);
 }

@@ -90,6 +90,7 @@ public class RoleManager {
     @Transactional(rollbackFor = Exception.class)
     public boolean insertRole(Role role,String permids){
         try {
+            role.setDelFlag(1);
             if (roleMapper.insertRoleAndReturnId(role)>0){
                 RolePerm roleperm=new RolePerm();
                 roleperm.setPermIds(permids);

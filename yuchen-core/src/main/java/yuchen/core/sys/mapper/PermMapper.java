@@ -22,7 +22,7 @@ public interface PermMapper {
 
     List<Perm> queryByType(List<Integer> types);
 
-    List<Perm> queryByIdsAndParentId(@Param("ids") List<Long> ids, @Param("parentid") Long par);
+    List<Perm> queryByIdsAndParentId(@Param("ids") List<Long> ids, @Param("parentId") Long par);
 
     List<String> queryUrlByListId(List<Long> ids);
 

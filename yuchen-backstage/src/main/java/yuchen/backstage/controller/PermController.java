@@ -55,14 +55,14 @@ public class PermController extends BaseController {
         if (perm.getParentId()!=null&&perm.getParentId()>0){
             Perm parent= permissionService.queryById(perm.getParentId());
             if (parent!=null){
-                int type=parent.getType()+1;
-                perm.setType(type);
+                int type=parent.getPermType()+1;
+                perm.setPermType(type);
             }else {
-                perm.setType(1);
+                perm.setPermType(1);
             }
         }else {
             perm.setParentId((long)0);
-            perm.setType(1);
+            perm.setPermType(1);
         }
         perm.setCreateTime(new Date());
         perm.setUpdateTime(new Date());
@@ -90,14 +90,14 @@ public class PermController extends BaseController {
         if (perm.getParentId()!=null&&perm.getParentId()>0){
             Perm parent= permissionService.queryById(perm.getParentId());
             if (parent!=null){
-                int type=parent.getType()+1;
-                perm.setType(type);
+                int type=parent.getPermType()+1;
+                perm.setPermType(type);
             }else {
-                perm.setType(1);
+                perm.setPermType(1);
             }
         }else {
             perm.setParentId((long)0);
-            perm.setType(1);
+            perm.setPermType(1);
         }
         if (perm.getId()!=null&&perm.getId()>0){    //修改
             perm.setUpdateTime(new Date());

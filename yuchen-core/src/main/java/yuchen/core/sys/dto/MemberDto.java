@@ -8,7 +8,7 @@ import java.util.List;
  */
 public class MemberDto extends BaseDto {
     private Long id;
-    private String phone;
+    private String mobile;
     private String userName;
     private String displayName;
     private Short sex;
@@ -28,12 +28,12 @@ public class MemberDto extends BaseDto {
         this.id = id;
     }
 
-    public String getPhone() {
-        return phone;
+    public String getMobile() {
+        return mobile;
     }
 
-    public void setPhone(String phone) {
-        this.phone = phone;
+    public void setMobile(String mobile) {
+        this.mobile = mobile;
     }
 
     public String getUserName() {

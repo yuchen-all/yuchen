@@ -11,47 +11,55 @@
         <result column="displayname" property="displayName" jdbcType="VARCHAR"></result>
         <result column="create_time" property="createTime" jdbcType="DATE"></result>
         <result column="update_time" property="updateTime" jdbcType="DATE"></result>
+        <result column="del_flag" property="delFlag" jdbcType="INTEGER"></result>
     </resultMap>
 
     <sql id="select_sql">
-        SELECT id,rolename,displayname,create_time,update_time
+        SELECT id,rolename,displayname,create_time,update_time,del_flag
     </sql>
 
     <select id="queryById" parameterType="long" resultMap="result">
         <include refid="select_sql"/>
-        FROM tb_role WHERE id=#{id}
+        FROM tb_role WHERE id=#{id} AND del_flag = 1
     </select>
 
     <select id="queryByName" parameterType="string" resultMap="result">
         <include refid="select_sql"/>
-        FROM tb_role WHERE rolename=#{name}
+        FROM tb_role WHERE rolename=#{name} AND del_flag = 1
     </select>
 
     <select id="queryByIds" resultMap="result">
         <include refid="select_sql"/>
-        FROM tb_role WHERE
-        <foreach collection="list" item="id" index="index" separator="OR">
-            id=#{id}
-        </foreach>
+        FROM tb_role
+        <where>
+            del_flag = 1
+            <if test="list != null">
+                AND
+                <foreach collection="list" item="id" index="index" separator="OR">
+                    id=#{id}
+                </foreach>
+            </if>
+        </where>
     </select>
 
     <select id="queryList" resultMap="result">
         <include refid="select_sql"/>
-        FROM tb_role
+        FROM tb_role WHERE del_flag = 1
     </select>
 
     <select id="queryPageList" resultMap="result">
         <include refid="select_sql"/>
-        FROM tb_role
+        FROM tb_role WHERE del_flag = 1
         limit #{query.startRow},#{query.pageSize}
     </select>
 
     <select id="queryCountPage" resultType="java.lang.Integer">
-        SELECT COUNT(1) FROM tb_role
+        SELECT COUNT(1) FROM tb_role WHERE del_flag = 1
     </select>
 
     <insert id="insertRoleAndReturnId" parameterType="role" useGeneratedKeys="true" keyProperty="id">
-        INSERT tb_role(rolename,displayname,create_time,update_time) VALUES (#{roleName},#{displayName},#{createTime},#{updateTime})
+        INSERT tb_role(rolename,displayname,create_time,update_time,del_flag)
+        VALUES (#{roleName},#{displayName},#{createTime},#{updateTime},#{delFlag})
     </insert>
 
     <update id="updateRole" parameterType="role">
@@ -59,6 +67,6 @@
     </update>
 
     <delete id="deleteRole" parameterType="long">
-        DELETE FROM tb_role WHERE id=#{id}
+        UPDATE tb_role SET del_flag = -1 WHERE id=#{id}
     </delete>
 </mapper>

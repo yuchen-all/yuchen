@@ -82,8 +82,8 @@
                 type: "post",
                 success: function (data) {
                     if (data.code > 0) {
-                        $(obj).parents("tr").remove();
                         layer.msg('已删除!',{icon:1,time:1000});
+                        javascript:location.replace(location.href);
                     }
                     else {
                         layer.msg(data.msg,{icon:1,time:1000});

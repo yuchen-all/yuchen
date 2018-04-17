@@ -9,13 +9,14 @@
         <id column="id" property="id" jdbcType="BIGINT" javaType="long"></id>
         <result column="rolename" property="roleName" jdbcType="VARCHAR"></result>
         <result column="displayname" property="displayName" jdbcType="VARCHAR"></result>
+        <result column="remark" property="remark" jdbcType="VARCHAR"></result>
         <result column="create_time" property="createTime" jdbcType="DATE"></result>
         <result column="update_time" property="updateTime" jdbcType="DATE"></result>
         <result column="del_flag" property="delFlag" jdbcType="INTEGER"></result>
     </resultMap>
 
     <sql id="select_sql">
-        SELECT id,rolename,displayname,create_time,update_time,del_flag
+        SELECT id,rolename,displayname,remark,create_time,update_time,del_flag
     </sql>
 
     <select id="queryById" parameterType="long" resultMap="result">

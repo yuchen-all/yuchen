@@ -1,28 +1,40 @@
 #set($layout =  "share/hi-layout.vm" )
 <article class="page-container">
-    <form class="form form-horizontal" id="form-admin-add">
-        <input type="hidden" name="id" value="$!{member.id}">
+    <form class="form form-horizontal" id="form-member-add">
+        <input type="hidden" name="id" value="0">
         <div class="row cl">
             <label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>登录名：</label>
             <div class="formControls col-xs-8 col-sm-9">
-                <input type="text" class="input-text" value="$!{member.userName}" placeholder="" id="userName" name="userName">
+                <input type="text" class="input-text" value="" placeholder="" id="userName" name="userName">
             </div>
         </div>
         <div class="row cl">
             <label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>用户名：</label>
             <div class="formControls col-xs-8 col-sm-9">
-                <input type="text" class="input-text" value="$!{member.displayName}" placeholder="" id="displayName" name="displayName">
+                <input type="text" class="input-text" value="" placeholder="" id="displayName" name="displayName">
+            </div>
+        </div>
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>初始密码：</label>
+            <div class="formControls col-xs-8 col-sm-9">
+                <input type="password" class="input-text" autocomplete="off" value="" placeholder="密码" id="password" name="password">
+            </div>
+        </div>
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>确认密码：</label>
+            <div class="formControls col-xs-8 col-sm-9">
+                <input type="password" class="input-text" autocomplete="off"  placeholder="确认新密码" id="password2" name="password2">
             </div>
         </div>
         <div class="row cl">
             <label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>性别：</label>
             <div class="formControls col-xs-8 col-sm-9 skin-minimal">
                 <div class="radio-box">
-                    <input name="sex" type="radio" value="1" id="sex-1" #if($member.sex==1) checked #end >
+                    <input name="sex" type="radio" value="1" id="sex-1" checked>
                     <label for="sex-1">男</label>
                 </div>
                 <div class="radio-box">
-                    <input type="radio" id="sex-2" value="2" name="sex" #if($member.sex==2) checked #end>
+                    <input type="radio" id="sex-2" value="2" name="sex">
                     <label for="sex-2">女</label>
                 </div>
             </div>
@@ -30,15 +42,15 @@
         <div class="row cl">
             <label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>手机：</label>
             <div class="formControls col-xs-8 col-sm-9">
-                <input type="text" class="input-text" value="$!{member.mobile}" placeholder="" id="mobile" name="mobile">
+                <input type="text" class="input-text" value="" placeholder="" id="mobile" name="mobile">
             </div>
         </div>
-    ##        <div class="row cl">
-    ##            <label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>邮箱：</label>
-    ##            <div class="formControls col-xs-8 col-sm-9">
-    ##                <input type="text" class="input-text" placeholder="@" name="email" id="email">
-    ##            </div>
-    ##        </div>
+##        <div class="row cl">
+##            <label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>邮箱：</label>
+##            <div class="formControls col-xs-8 col-sm-9">
+##                <input type="text" class="input-text" placeholder="@" name="email" id="email">
+##            </div>
+##        </div>
         <div class="row cl">
             <label class="form-label col-xs-4 col-sm-3">角色：</label>
             <div class="formControls col-xs-8 col-sm-9">
@@ -46,12 +58,7 @@
                     <dd>
                         #foreach($item in $rolelist)
                             <label class="">
-                                <input type="checkbox" value="$!{item.id}" name="user-Character-0-0-0"
-                                    #foreach($role in $member.roles)
-                                    #if($item.id==$role.id)
-                                        checked
-                                    #end
-                                    #end id="user-Character-0-0-0">
+                                <input type="checkbox" value="$!{item.id}" name="user-Character-0-0-0" id="user-Character-0-0-0">
                                 $!{item.displayName}</label>
                         #end
                     </dd>
@@ -62,7 +69,7 @@
         <div class="row cl">
             <label class="form-label col-xs-4 col-sm-3">备注：</label>
             <div class="formControls col-xs-8 col-sm-9">
-                <textarea name="remark" cols="" rows="" class="textarea"  placeholder="说点什么...100个字符以内" dragonfly="true" onKeyUp="textarealength(this,100)">$!{member.remark}</textarea>
+                <textarea name="remark" cols="" rows="" class="textarea"  placeholder="说点什么...100个字符以内" dragonfly="true" onKeyUp="textarealength(this,100)"></textarea>
                 <p class="textarea-numberbar"><em class="textarea-length">0</em>/100</p>
             </div>
         </div>
@@ -82,9 +89,9 @@
             increaseArea: '20%'
         });
 
-        $("#form-admin-add").validate({
+        $("#form-member-add").validate({
             rules:{
-                adminName:{
+                userName:{
                     required:true,
                     minlength:4,
                     maxlength:16
@@ -101,13 +108,13 @@
                 },
                 mobile:{
                     required:true,
-                    isPhone:true,
+                    isMobile:true,
                 },
                 email:{
                     required:true,
                     email:true,
                 },
-                adminRole:{
+                memberRole:{
                     required:true,
                 },
             },
@@ -124,8 +131,8 @@
                 })
                 $('#roleids').val(roleids);
                 jQuery.ajax({
-                    url: '$!{request.getContextPath()}/admin/adding',
-                    data: jQuery('#form-admin-add').serialize(),
+                    url: '$!{request.getContextPath()}/member/adding',
+                    data: jQuery('#form-member-add').serialize(),
                     type: "post",
                     success: function (data) {
                         if (data.code > 0) {

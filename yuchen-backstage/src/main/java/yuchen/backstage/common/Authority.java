@@ -1,5 +1,10 @@
 package yuchen.backstage.common;
 
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+
+import javax.servlet.http.HttpSession;
+
 /**
  * Created by alan.zheng on 2018/4/16.
  */
@@ -20,6 +25,13 @@ public class Authority {
     public String permissionList(){
         String strings=PermissionUtility.getPerms();
         return strings;
+    }
+
+    public AuthUser currentUser(){
+        HttpSession session = ((ServletRequestAttributes) RequestContextHolder
+                .getRequestAttributes()).getRequest().getSession();
+        AuthUser authUser = (AuthUser) session.getAttribute(Constants.SESSION_USER_KEY);
+        return authUser;
     }
 
 }

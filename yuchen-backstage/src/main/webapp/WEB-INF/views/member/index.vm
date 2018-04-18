@@ -47,6 +47,9 @@
 </div>
 #parse("share/hi-footer.vm")
 <script type="text/javascript">
+
+    var currentUserId = '$auth.currentUser().Id';
+
     var memberTable;
     jQuery(function($){
         memberList();
@@ -167,6 +170,9 @@
     function getAllOperation(row){
         var status = row.status;
         var  button;
+        if (currentUserId==row.id){
+            return "";
+        }
         if(status == 1 && isPermission("/member/stop")){
             if (!button || button == undefined){
                 button = '<a style="text-decoration:none" onClick="member_stop(this,'+row.id+')" href="javascript:;" title="停用"><i class="Hui-iconfont">&#xe631;</i></a>'

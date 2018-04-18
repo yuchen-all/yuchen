@@ -13,6 +13,8 @@
 <script type="text/javascript">
     var permissionStr = '$auth.permissionList()';
 
+    var user = '$auth.permissionList()';
+
     function isPermission(perm){
         var permission = permissionStr.split(',');
         if (permission && permission.length>0){

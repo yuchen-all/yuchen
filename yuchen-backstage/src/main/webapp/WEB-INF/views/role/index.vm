@@ -49,8 +49,8 @@
         layer_show(title,url,w,h);
     }
     /*管理员-角色-编辑*/
-    function admin_role_edit(title,url,id,w,h){
-        layer_show(title,url,w,h);
+    function admin_role_edit(id){
+        layer_show("角色编辑","$!{request.getContextPath()}/role/edit?roleid="+id+"","","");
     }
     /*管理员-角色-删除*/
     function admin_role_del(obj,id){
@@ -167,9 +167,9 @@
 
         if(isPermission("/role/edit")){
             if (!button || button == undefined){
-                button = '<a title="编辑" href="javascript:;" onclick="admin_role_edit("角色编辑","/role/edit?roleid='+row.id+'","1")" style="text-decoration:none"><i class="Hui-iconfont">&#xe6df;</i></a>'
+                button = '<a title="编辑" href="javascript:;" onclick="admin_role_edit('+row.id+')" style="text-decoration:none"><i class="Hui-iconfont">&#xe6df;</i></a>'
             }else{
-                button += '<a title="编辑" href="javascript:;" onclick="admin_role_edit("角色编辑","/role/edit?roleid='+row.id+'","1")" style="text-decoration:none"><i class="Hui-iconfont">&#xe6df;</i></a>'
+                button += '<a title="编辑" href="javascript:;" onclick="admin_role_edit('+row.id+')" style="text-decoration:none"><i class="Hui-iconfont">&#xe6df;</i></a>'
             }
         }
         if(isPermission("/role/delete")){

@@ -57,8 +57,8 @@
         layer_show(title,url,w,h);
     }
     /*管理员-权限-编辑*/
-    function admin_permission_edit(title,url,id,w,h){
-        layer_show(title,url,w,h);
+    function admin_permission_edit(id){
+        layer_show("角色编辑","$!{request.getContextPath()}/perm/edit?permid="+id+"","",800);
     }
 
     /*管理员-权限-删除*/
@@ -159,9 +159,9 @@
 
         if(isPermission("/perm/edit")){
             if (!button || button == undefined){
-                button = '<a title="编辑" href="javascript:;" onclick="admin_permission_edit("角色编辑","/perm/edit?permid=' + row.id + '","1","","800")" class="ml-5" style="text-decoration:none"><i class="Hui-iconfont">&#xe6df;</i></a>'
+                button = '<a title="编辑" href="javascript:;" onclick="admin_permission_edit(' + row.id + ')" class="ml-5" style="text-decoration:none"><i class="Hui-iconfont">&#xe6df;</i></a>'
             }else{
-                button += '<a title="编辑" href="javascript:;" onclick="admin_permission_edit("角色编辑"","/perm/edit?permid=' + row.id + '","1","","800")" class="ml-5" style="text-decoration:none"><i class="Hui-iconfont">&#xe6df;</i></a>'
+                button += '<a title="编辑" href="javascript:;" onclick="admin_permission_edit(' + row.id + ')" class="ml-5" style="text-decoration:none"><i class="Hui-iconfont">&#xe6df;</i></a>'
             }
         }
         if(isPermission("/perm/delete")){

@@ -41,34 +41,32 @@ public class MemberServiceImpl implements MemberService {
     }
 
     public PageModel<MemberDto> queryPageList(MemberQuery query) {
-        List<MemberDto> listDto=new ArrayList<MemberDto>();
-        List<Member> list= memberManager.queryPagelist(query);
-        int count=memberManager.queryCountPage(query);
-        for (Member member:list) {
-            MemberDto memberDto=new  MemberDto();
-            try {
+        PageModel<MemberDto> pageModel= null;
+        try {
+            List<MemberDto> listDto=new ArrayList<MemberDto>();
+            List<Member> list= memberManager.queryPagelist(query);
+            int count=memberManager.queryCountPage(query);
+            for (Member member:list) {
+                MemberDto memberDto=new  MemberDto();
                 PropertyUtils.copyProperties(memberDto,member);
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
-            } catch (InvocationTargetException e) {
-                e.printStackTrace();
-            } catch (NoSuchMethodException e) {
-                e.printStackTrace();
-            }
-            List<MemberRoleDto> liststr=new ArrayList<MemberRoleDto>();
-            List<Role> rolelist= roleManager.queryByMemberId(member.getId());
-            if (rolelist!=null){
-                for (Role role:rolelist) {
-                    MemberRoleDto memberRoleDto=new MemberRoleDto();
-                    memberRoleDto.setId(role.getId());
-                    memberRoleDto.setName(role.getDisplayName());
-                    liststr.add(memberRoleDto);
+                List<MemberRoleDto> liststr=new ArrayList<MemberRoleDto>();
+                List<Role> rolelist= roleManager.queryByMemberId(member.getId());
+                MemberRoleDto memberRoleDto = null;
+                if (rolelist!=null){
+                    for (Role role:rolelist) {
+                        memberRoleDto =new MemberRoleDto();
+                        memberRoleDto.setId(role.getId());
+                        memberRoleDto.setName(role.getDisplayName());
+                        liststr.add(memberRoleDto);
+                    }
                 }
+                memberDto.setRoles(liststr);
+                listDto.add(memberDto);
             }
-            memberDto.setRoles(liststr);
-            listDto.add(memberDto);
+            pageModel = new PageModel<MemberDto>(listDto,query.getCurrPage(),count,query.getPageSize());
+        } catch (Exception e) {
+            logger.error("MemberServiceImpl.queryPageList异常",e);
         }
-        PageModel<MemberDto> pageModel=new PageModel<MemberDto>(listDto,query.getCurrPage(),count,query.getPageSize());
         return pageModel;
     }
 
@@ -84,9 +82,10 @@ public class MemberServiceImpl implements MemberService {
         //List<Role> rolelist= roleDao.queryByMemberId(id);
         List<Role> rolelist=roleManager.queryByMemberId(id);
         List<MemberRoleDto> memberRoleDtos=new ArrayList<MemberRoleDto>();
+        MemberRoleDto memberRoleDto = null;
         if (rolelist!=null){
             for (Role role:rolelist) {
-                MemberRoleDto memberRoleDto=new MemberRoleDto();
+                memberRoleDto =new MemberRoleDto();
                 memberRoleDto.setId(role.getId());
                 memberRoleDto.setName(role.getDisplayName());
                 memberRoleDtos.add(memberRoleDto);
@@ -133,14 +132,16 @@ public class MemberServiceImpl implements MemberService {
     public List<AuthPerm> queryAuthPerm(Long memberid) {
         List<AuthPerm> authpermlist=new ArrayList<AuthPerm>();
         List<Perm> perms= permManager.queryByMemberIdAndParentId(memberid,(long)0);
+        AuthPerm authperm = null;
+        AuthPerm authperm2 = null;
         for (Perm perm:perms) {
-            AuthPerm authperm=new AuthPerm();
+            authperm =new AuthPerm();
             authperm.setName(perm.getDisplayName());
             authperm.setUrl(perm.getUrl());
             List<Perm> perms2= permManager.queryByMemberIdAndParentId(memberid,perm.getId());
             List<AuthPerm> authpermlist2=new ArrayList<AuthPerm>();
             for (Perm perm2:perms2) {
-                AuthPerm authperm2=new AuthPerm();
+                authperm2 =new AuthPerm();
                 authperm2.setName(perm2.getDisplayName());
                 authperm2.setUrl(perm2.getUrl());
                 authpermlist2.add(authperm2);
